@@ -36,13 +36,11 @@ async def Monitor(ocp_url : str, nodestart : str, rabbitmqserver : str):
                     rabbitmq_channel.basic_publish(exchange='', routing_key=node_id, body=str(value))
 
                     print(str(node_id) + " -> " + str(value))
-        asyncio.sleep(5)
+        await asyncio.sleep(0.01)
         
     rabbitmq_connection.close()
     client.disconnect()
 
-
-opcurl = "empty"
 app = FastAPI()
 
 #Testing
@@ -52,8 +50,8 @@ async def root():
 
 # Check If OPC UA Server is Available
 @app.get("/OPCServer")
-def OPCServer(url : str):
-    TestingtUrl = url
+def OPCServer(ocp_url : str):
+    TestingtUrl = ocp_url
     opc_client = Client(TestingtUrl)
     try:
         opc_client.connect()
@@ -67,7 +65,7 @@ def OPCServer(url : str):
 async def ConnectOPCServer(ocp_url : str, nodestart : str, rabbitmqserver : str,):
     global StopFlag
     StopFlag = False
-    RunningTasks = asyncio.create_task(Monitor(ocp_url, nodestart, rabbitmqserver))
+    asyncio.create_task(Monitor(ocp_url, nodestart, rabbitmqserver))
     return True
 
 # Get Filtered Values of the OPC UA Server
