@@ -30,7 +30,7 @@ async def Monitor(ocp_url : str, nodestart : str, rabbitmqserver : str):
                     rabbitmq_channel.basic_publish(exchange='', routing_key=node_id, body=str(value))
 
                     print(str(node_id) + " -> " + str(value))
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.01)
         
     rabbitmq_connection.close()
     client.disconnect()
