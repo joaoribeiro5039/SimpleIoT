@@ -1,10 +1,10 @@
 [
     {
-        "node_id": "ns=1;s=Machine1",
-        "name": "Machine1",
+        "node_id": "ns=1;s=Factory.Line1.Machine1",
+        "name": "Factory.Line1.Machine1",
         "variables": [
             {
-                "node_id": "ns=1;s=Machine1.Speed",
+                "node_id": "ns=1;s=Factory.Line1.Machine1.Speed",
                 "name": "Speed",
                 "value": 0,
                 "isRandom": true,
@@ -12,7 +12,7 @@
                 "range_max": 400
             },
             {
-                "node_id": "ns=1;s=Machine1.Temperature",
+                "node_id": "ns=1;s=Factory.Line1.Machine1.Temperature",
                 "name": "Temperature",
                 "value": 0,
                 "range": 0,
@@ -21,7 +21,7 @@
                 "range_max": 400
             },
             {
-                "node_id": "ns=1;s=Machine1.State",
+                "node_id": "ns=1;s=Factory.Line1.Machine1.State",
                 "name": "State",
                 "value": 0,
                 "isRandom": false,
@@ -29,7 +29,7 @@
                 "range_max": 5
             },
             {
-                "node_id": "ns=1;s=Machine1.DateTime",
+                "node_id": "ns=1;s=Factory.Line1.Machine1.DateTime",
                 "name": "DateTime",
                 "value": 0,
                 "isRandom": false,
@@ -39,11 +39,11 @@
         ]
     },
     {
-        "node_id": "ns=1;s=Machine2",
-        "name": "Machine2",
+        "node_id": "ns=1;s=Factory.Line1.Machine2",
+        "name": "Factory.Line1.Machine2",
         "variables": [
             {
-                "node_id": "ns=1;s=Machine2.Speed",
+                "node_id": "ns=1;s=Factory.Line1.Machine2.Speed",
                 "name": "Speed",
                 "value": 0,
                 "isRandom": true,
@@ -51,7 +51,7 @@
                 "range_max": 400
             },
             {
-                "node_id": "ns=1;s=Machine2.Temperature",
+                "node_id": "ns=1;s=Factory.Line1.Machine2.Temperature",
                 "name": "Temperature",
                 "value": 0,
                 "isRandom": true,
@@ -59,7 +59,7 @@
                 "range_max": 400
             },
             {
-                "node_id": "ns=1;s=Machine2.State",
+                "node_id": "ns=1;s=Factory.Line1.Machine2.State",
                 "name": "State",
                 "value": 0,
                 "isRandom": false,
@@ -67,7 +67,7 @@
                 "range_max": 5
             },
             {
-                "node_id": "ns=1;s=Machine2.DateTime",
+                "node_id": "ns=1;s=Factory.Line1.Machine2.DateTime",
                 "name": "DateTime",
                 "value": 0,
                 "isRandom": false,

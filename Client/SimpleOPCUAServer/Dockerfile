@@ -8,7 +8,7 @@ RUN mkdir /opcserver
 
 WORKDIR /usr/src/opcserver
 COPY opcuaserver.py .
-COPY nodes.json .
+COPY nodes_line1.json nodes.json
 EXPOSE 4840
 
 CMD ["python","opcuaserver.py","--host","0.0.0.0"]
