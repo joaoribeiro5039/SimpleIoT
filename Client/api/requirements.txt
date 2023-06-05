@@ -1,0 +1,4 @@
+opcua
+uvicorn[standard]
+fastapi[all]
+pika
