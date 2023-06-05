@@ -6,12 +6,6 @@ from opcua import Client
 from typing import Optional
 import pika
 
-
-
-
-
-
-
 global StopFlag
 
 async def Monitor(ocp_url : str, nodestart : str, rabbitmqserver : str): 
@@ -74,34 +68,6 @@ def opcuavalues():
     global StopFlag
     StopFlag = True
     return {True}
-
-
-
-# # Get all Values of the OPC UA Server
-# @app.get("/OPCServer")
-# def opcuavalues(opcUrl : str, UserName : Optional[str] = None, Password : Optional[str] = None , Secure_Policy : Optional[str] = None):
-#     return ReadAllOPCUAValues(opcUrl, UserName, Password, Secure_Policy)
-
-# # Get Filtered Values of the OPC UA Server
-# @app.get("/ReadFilteredOPCUAValues")
-# def opcuavalues(opcUrl : str, nodeid : str, UserName :  Optional[str] = None, Password :  Optional[str] = None , Secure_Policy :  Optional[str] = None):
-#     NodeColletion = ReadAllOPCUAValues(opcUrl, UserName, Password, Secure_Policy)
-#     return {node_id: Current_value for node_id, Current_value in NodeColletion.items() if nodeid in node_id}
-
-# # Get Filtered Values of the OPC UA Server
-# @app.put("/WriteOPCUAValues")
-# def opcuavalues(opcUrl : str, nodeid : str, value : str, UserName :  Optional[str] = None, Password :  Optional[str] = None , Secure_Policy :  Optional[str] = None):
-#     WriteOPCUAValues(opcUrl, nodeid, value, UserName, Password, Secure_Policy)
-#     return {True}
-
-# #Start Monitoring Activity
-# @app.post("/StartMonitor")
-# async def Start_Monitor(Freq : int, opcUrl : str, nodeid : str, UserName :  Optional[str] = None, Password :  Optional[str] = None , Secure_Policy :  Optional[str] = None):
-#     global RunningTasks
-#     global StopFlag
-#     StopFlag = False
-#     RunningTasks = asyncio.create_task(Monitor(Freq, opcUrl, nodeid, UserName, Password, Secure_Policy))
-#     return True
 
 #On Shutdown
 @app.on_event("shutdown")
