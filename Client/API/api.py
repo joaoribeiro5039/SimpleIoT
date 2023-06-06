@@ -6,6 +6,22 @@ from opcua import Client
 from typing import Optional
 import pika
 
+global LineName
+
+def data_change_handler(ocp_url : str, nodestart : str, rabbitmqserver : str):
+    rabbitmq_connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmqserver))
+    rabbitmq_channel = rabbitmq_connection.channel()
+    
+    rabbitmq_channel.queue_declare(queue=node_id)
+    rabbitmq_channel.basic_publish(exchange='', routing_key=node_id, body=str(value))
+    
+
+    
+    rabbitmq_connection.close()
+    print("New value:", value)
+
+
+
 global StopFlag
 
 async def Monitor(ocp_url : str, nodestart : str, rabbitmqserver : str): 
@@ -14,8 +30,7 @@ async def Monitor(ocp_url : str, nodestart : str, rabbitmqserver : str):
     client.connect()
     
     # Establish a connection to RabbitMQ server
-    rabbitmq_connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmqserver))
-    rabbitmq_channel = rabbitmq_connection.channel()
+    
 
     while not StopFlag:
         root = client.get_root_node()
@@ -26,13 +41,10 @@ async def Monitor(ocp_url : str, nodestart : str, rabbitmqserver : str):
                 if nodestart in str(subnode):
                     node_id = str(subnode)
                     value = client.get_node(node_id).get_value()
-                    rabbitmq_channel.queue_declare(queue=node_id)
-                    rabbitmq_channel.basic_publish(exchange='', routing_key=node_id, body=str(value))
 
                     print(str(node_id) + " -> " + str(value))
         await asyncio.sleep(0.1)
         
-    rabbitmq_connection.close()
     client.disconnect()
 
 app = FastAPI()
@@ -55,10 +67,11 @@ def OPCServer(ocp_url : str):
         return False
 
 # Connect to this OPC Server
-@app.post("/ConnectOPCServer")
+@app.post("/StartClient")
 async def ConnectOPCServer(ocp_url : str, nodestart : str, rabbitmqserver : str,):
-    global StopFlag
-    StopFlag = False
+    client = Client(ocp_url)
+    client.connect()
+
     asyncio.create_task(Monitor(ocp_url, nodestart, rabbitmqserver))
     return True
 
