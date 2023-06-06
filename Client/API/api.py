@@ -10,6 +10,7 @@ global LineName
 global opc_client
 global rabbitmq_connection
 global rabbitmq_channel
+
 def data_change_handler(node, value, data_type):
     global rabbitmq_channel
     rabbitmq_channel.queue_declare(queue=node)
