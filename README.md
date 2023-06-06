@@ -1,3 +1,8 @@
+
+
+## Diagram:
+![Alt text](Diagram.jpg)
+
 API Documentation:
 
 This API provides functionality to connect to an OPC UA server, monitor specific nodes, and publish their values to a RabbitMQ server.
