@@ -7,45 +7,20 @@ from typing import Optional
 import pika
 
 global LineName
+global opc_client
+global rabbitmq_connection
+
+
 
 def data_change_handler(ocp_url : str, nodestart : str, rabbitmqserver : str):
-    rabbitmq_connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmqserver))
-    rabbitmq_channel = rabbitmq_connection.channel()
     
     rabbitmq_channel.queue_declare(queue=node_id)
     rabbitmq_channel.basic_publish(exchange='', routing_key=node_id, body=str(value))
-    
-
     
     rabbitmq_connection.close()
     print("New value:", value)
 
 
-
-global StopFlag
-
-async def Monitor(ocp_url : str, nodestart : str, rabbitmqserver : str): 
-    global StopFlag
-    client = Client(ocp_url)
-    client.connect()
-    
-    # Establish a connection to RabbitMQ server
-    
-
-    while not StopFlag:
-        root = client.get_root_node()
-        objects = root.get_children()[0]
-        nodes = objects.get_children()
-        for node in nodes:
-            for subnode in node.get_children():
-                if nodestart in str(subnode):
-                    node_id = str(subnode)
-                    value = client.get_node(node_id).get_value()
-
-                    print(str(node_id) + " -> " + str(value))
-        await asyncio.sleep(0.1)
-        
-    client.disconnect()
 
 app = FastAPI()
 
@@ -58,10 +33,10 @@ async def root():
 @app.get("/OPCServer")
 def OPCServer(ocp_url : str):
     TestingtUrl = ocp_url
-    opc_client = Client(TestingtUrl)
+    opc_test_client = Client(TestingtUrl)
     try:
-        opc_client.connect()
-        opc_client.disconnect()
+        opc_test_client.connect()
+        opc_test_client.disconnect()
         return True
     except:
         return False
@@ -69,8 +44,28 @@ def OPCServer(ocp_url : str):
 # Connect to this OPC Server
 @app.post("/StartClient")
 async def ConnectOPCServer(ocp_url : str, nodestart : str, rabbitmqserver : str,):
-    client = Client(ocp_url)
-    client.connect()
+    global opc_client
+    global rabbitmq_connection
+    if opc_client.isconnected():
+        opc_client.disconnect()
+
+    opc_client = Client(ocp_url)
+    opc_client.connect()
+    root = opc_client.get_root_node()
+    objects = root.get_children()[0]
+    nodes = objects.get_children()
+    
+    rabbitmq_connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmqserver))
+    rabbitmq_channel = rabbitmq_connection.channel()
+
+    for node in nodes:
+        for subnode in node.get_children():
+            if nodestart in str(subnode):
+                node_id = str(subnode)
+                value = opc_client.get_node(node_id).get_value()
+                print(str(node_id) + " -> " + str(value))
+        
+    opc_client.disconnect()
 
     asyncio.create_task(Monitor(ocp_url, nodestart, rabbitmqserver))
     return True
