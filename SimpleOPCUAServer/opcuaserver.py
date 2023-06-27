@@ -28,11 +28,13 @@ server.start()
 def get_Temperature_value(time, amplitude):
     frequency = 0.01
     x = amplitude + amplitude * np.sin(2 * np.pi * frequency * time) * np.cos(np.pi * frequency*0.23 * time) + amplitude/5 * np.cos(np.pi * frequency*5 * time)
+    x = x * random.uniform(0.98, 1.02)
     return x
 
 def get_Speed_value(time, amplitude):
     frequency = 0.01
     x = amplitude + amplitude * np.sin(2 * np.pi * frequency * time) * np.cos(np.pi * frequency*0.23 * time) + amplitude/8 * np.cos(np.pi * frequency*4 * time)
+    x = x * random.uniform(0.98, 1.02)
     if x < 0:
         x = x * -1
     return x
@@ -46,13 +48,31 @@ try:
         for node in jsonnodes:
             for var in node["variables"]:
                 var_node = server.get_node(var["node_id"])
-                if "Machine1" in str(var_node):
+                if "Motor1" in str(var_node):
                     if "Temperature" in str(var_node):
                         var_node.set_value(round(get_Temperature_value(timeElapsed,25.0),3))
                     if "Speed" in str(var_node):
                         var_node.set_value(round(get_Speed_value(timeElapsed,400.0),3))
                     
-                if "Machine2" in str(var_node):
+                if "Motor2" in str(var_node):
+                    if "Temperature" in str(var_node):
+                        var_node.set_value(round(get_Temperature_value(timeElapsed,35.0),3))
+                    if "Speed" in str(var_node):
+                        var_node.set_value(round(get_Speed_value(timeElapsed,1000.0),3))
+                    
+                if "Motor3" in str(var_node):
+                    if "Temperature" in str(var_node):
+                        var_node.set_value(round(get_Temperature_value(timeElapsed,35.0),3))
+                    if "Speed" in str(var_node):
+                        var_node.set_value(round(get_Speed_value(timeElapsed,1000.0),3))
+                    
+                if "Motor4" in str(var_node):
+                    if "Temperature" in str(var_node):
+                        var_node.set_value(round(get_Temperature_value(timeElapsed,35.0),3))
+                    if "Speed" in str(var_node):
+                        var_node.set_value(round(get_Speed_value(timeElapsed,1000.0),3))
+                    
+                if "Motor5" in str(var_node):
                     if "Temperature" in str(var_node):
                         var_node.set_value(round(get_Temperature_value(timeElapsed,35.0),3))
                     if "Speed" in str(var_node):

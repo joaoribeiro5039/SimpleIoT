@@ -1,188 +1,131 @@
 [
     {
-        "node_id": "ns=1;s=1.Motor1",
+        "node_id": "ns=1;s=Motor1",
         "name": "1.Motor1",
         "variables": [
             {
                 "node_id": "ns=1;s=Motor1.Speed",
-                "name": "Speed"
+                "name": "Speed",
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor1.Temperature",
+                "node_id": "ns=1;s=Motor1.Temperature",
                 "name": "Temperature",
-                "value": 0,
-                "range": 0,
-                "isRandom": true,
-                "range_min": 300,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor1.State",
+                "node_id": "ns=1;s=Motor1.State",
                 "name": "State",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 5
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor1.DateTime",
+                "node_id": "ns=1;s=Motor1.DateTime",
                 "name": "DateTime",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 0
+                "value": 0
             }
         ]
     },
     {
-        "node_id": "ns=1;s=1.Motor2",
+        "node_id": "ns=1;s=Motor2",
         "name": "1.Motor2",
         "variables": [
             {
-                "node_id": "ns=1;s=1.Motor2.Speed",
+                "node_id": "ns=1;s=Motor2.Speed",
                 "name": "Speed",
-                "value": 0,
-                "isRandom": true,
-                "range_min": 200,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor2.Temperature",
+                "node_id": "ns=1;s=Motor2.Temperature",
                 "name": "Temperature",
-                "value": 0,
-                "isRandom": true,
-                "range_min": 300,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor2.State",
+                "node_id": "ns=1;s=Motor2.State",
                 "name": "State",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 5
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor2.DateTime",
+                "node_id": "ns=1;s=Motor2.DateTime",
                 "name": "DateTime",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 0
+                "value": 0
             }
         ]
     },
     {
-        "node_id": "ns=1;s=1.Motor3",
+        "node_id": "ns=1;s=Motor3",
         "name": "1.Motor3",
         "variables": [
             {
-                "node_id": "ns=1;s=1.Motor3.Speed",
+                "node_id": "ns=1;s=Motor3.Speed",
                 "name": "Speed",
-                "value": 0,
-                "isRandom": true,
-                "range_min": 200,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor3.Temperature",
+                "node_id": "ns=1;s=Motor3.Temperature",
                 "name": "Temperature",
-                "value": 0,
-                "isRandom": true,
-                "range_min": 300,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor3.State",
+                "node_id": "ns=1;s=Motor3.State",
                 "name": "State",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 5
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor3.DateTime",
+                "node_id": "ns=1;s=Motor3.DateTime",
                 "name": "DateTime",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 0
+                "value": 0
             }
         ]
     },
     {
-        "node_id": "ns=1;s=1.Motor4",
+        "node_id": "ns=1;s=Motor4",
         "name": "1.Motor4",
         "variables": [
             {
-                "node_id": "ns=1;s=1.Motor4.Speed",
+                "node_id": "ns=1;s=Motor4.Speed",
                 "name": "Speed",
-                "value": 0,
-                "isRandom": true,
-                "range_min": 200,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor4.Temperature",
+                "node_id": "ns=1;s=Motor4.Temperature",
                 "name": "Temperature",
-                "value": 0,
-                "isRandom": true,
-                "range_min": 300,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor4.State",
+                "node_id": "ns=1;s=Motor4.State",
                 "name": "State",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 5
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor4.DateTime",
+                "node_id": "ns=1;s=Motor4.DateTime",
                 "name": "DateTime",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 0
+                "value": 0
             }
         ]
     },
     {
-        "node_id": "ns=1;s=1.Motor5",
+        "node_id": "ns=1;s=Motor5",
         "name": "1.Motor5",
         "variables": [
             {
-                "node_id": "ns=1;s=1.Motor5.Speed",
+                "node_id": "ns=1;s=Motor5.Speed",
                 "name": "Speed",
-                "value": 0,
-                "isRandom": true,
-                "range_min": 200,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor5.Temperature",
+                "node_id": "ns=1;s=Motor5.Temperature",
                 "name": "Temperature",
-                "value": 0,
-                "isRandom": true,
-                "range_min": 300,
-                "range_max": 400
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor5.State",
+                "node_id": "ns=1;s=Motor5.State",
                 "name": "State",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 5
+                "value": 0
             },
             {
-                "node_id": "ns=1;s=1.Motor5.DateTime",
+                "node_id": "ns=1;s=Motor5.DateTime",
                 "name": "DateTime",
-                "value": 0,
-                "isRandom": false,
-                "range_min": 0,
-                "range_max": 0
+                "value": 0
             }
         ]
     }
