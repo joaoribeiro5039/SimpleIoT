@@ -1,0 +1,43 @@
+version: '3'
+services:
+  rabbitmq:
+      image: rabbitmq:3-management
+      ports:
+        - "5672:5672"
+        - "15672:15672"
+      volumes:
+        - ./rabbitmq:/var/lib/rabbitmq
+      environment:
+        - RABBITMQ_DEFAULT_USER=admin
+        - RABBITMQ_DEFAULT_PASS=admin
+      # networks:
+      #   - mynetwork
+
+  # simpleopcua:
+  #   build:
+  #     context: ./SimpleOPCUAServer
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - mynetwork
+  #   ports:
+  #     - "4840:4840"
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.5'
+  #         memory: 512M
+
+  # monitorservice:
+  #   build:
+  #     context: ./MonitorService
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - mynetwork
+  #   deploy:
+  #     replicas: 1
+  #     resources:
+  #       limits:
+  #         cpus: '0.5'
+  #         memory: 512M
+# networks:
+#   mynetwork:
