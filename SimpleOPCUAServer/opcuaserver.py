@@ -10,7 +10,7 @@ import numpy as np
 # create server
 server = Server()
 server.name = "SimpleOPCUA"
-server.set_endpoint("opc.tcp://localhost:4840")
+server.set_endpoint("opc.tcp://0.0.0.0:4840")
 
 # create objects and variables from json file
 with open("nodes.json", "r") as f:

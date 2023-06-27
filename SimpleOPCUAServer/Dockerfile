@@ -6,7 +6,7 @@ WORKDIR /usr/src/opcserver
 
 COPY requirements.txt .
 COPY opcuaserver.py .
-COPY nodes_line1.json nodes.json
+COPY nodes.json nodes.json
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
