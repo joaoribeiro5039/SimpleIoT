@@ -1,7 +1,7 @@
 [
     {
         "node_id": "ns=1;s=Motor1",
-        "name": "1.Motor1",
+        "name": "Motor1",
         "variables": [
             {
                 "node_id": "ns=1;s=Motor1.Speed",
@@ -27,7 +27,7 @@
     },
     {
         "node_id": "ns=1;s=Motor2",
-        "name": "1.Motor2",
+        "name": "Motor2",
         "variables": [
             {
                 "node_id": "ns=1;s=Motor2.Speed",
@@ -53,7 +53,7 @@
     },
     {
         "node_id": "ns=1;s=Motor3",
-        "name": "1.Motor3",
+        "name": "Motor3",
         "variables": [
             {
                 "node_id": "ns=1;s=Motor3.Speed",
@@ -79,7 +79,7 @@
     },
     {
         "node_id": "ns=1;s=Motor4",
-        "name": "1.Motor4",
+        "name": "Motor4",
         "variables": [
             {
                 "node_id": "ns=1;s=Motor4.Speed",
@@ -105,7 +105,7 @@
     },
     {
         "node_id": "ns=1;s=Motor5",
-        "name": "1.Motor5",
+        "name": "Motor5",
         "variables": [
             {
                 "node_id": "ns=1;s=Motor5.Speed",
