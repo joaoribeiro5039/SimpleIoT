@@ -6,30 +6,34 @@ from typing import Optional
 import pika
 import json
 import datetime
+import threading
 
-global LineName
-global opc_client
-global rabbitmq_connection
-global rabbitmq_channel
+global opc_clients
+opc_clients = []
+# create objects and variables from json file
+with open("monitorconfig.json", "r") as f:
+    jsonservers = json.load(f)
 
+for server in jsonservers:
+    opc_client = Client(server["url"])
+    opc_client.connect()
+    obj = {
+        "opc_client": opc_client,
+        "id": server["id"],
+        "url": server["url"]
+    }
+    opc_clients.append(obj)
 
-rabbitmq_connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', 5672, '/', pika.PlainCredentials('admin', 'admin')))
-rabbitmq_channel = rabbitmq_connection.channel()
-opc_client = Client("opc.tcp://localhost:4840")
-opc_client.connect()
-
-root = opc_client.get_root_node()
-objects = root.get_children()[0]
-nodes = objects.get_children()
-
-while True:
-    time.sleep(0.01)
+def Get_Nodes(opcClient):
+    print("Task Started for :" + str(opcClient["id"]) + "->" + opcClient["url"])
+    root = opcClient["opc_client"].get_root_node()
+    objects = root.get_children()[0]
+    nodes = objects.get_children()
     for node in nodes:
             for subnode in node.get_children():
                 node_id = str(subnode)
                 if "ns=1" in node_id:
-                    value = opc_client.get_node(node_id).get_value()
-                    rabbitmq_channel.queue_declare(queue=node_id)
+                    value = opcClient["opc_client"].get_node(node_id).get_value()
                     timestamp = datetime.datetime.now()
                     timestamp_str = timestamp.isoformat()
                     message = {
@@ -38,4 +42,13 @@ while True:
                             'Value': str(value)
                         }
                     message_str = json.dumps(message)
-                    rabbitmq_channel.basic_publish(exchange='', routing_key=node_id, body=message_str)
+
+    print("Task Ended for :" + str(opcClient["id"]) + "->" + opcClient["url"])
+
+
+for opc_client in opc_clients:
+    thread = threading.Thread(target=Get_Nodes(opc_client))
+    thread.start()
+
+for opc_client in opc_clients:
+    opc_client["opc_client"].disconnect()

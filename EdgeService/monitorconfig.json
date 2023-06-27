@@ -1,0 +1,33 @@
+[
+    {
+        "url": "opc.tcp://machine:4840",
+        "id":0
+    },{
+        "url": "opc.tcp://machine:4841",
+        "id":1
+    },{
+        "url": "opc.tcp://machine:4842",
+        "id":2
+    },{
+        "url": "opc.tcp://machine:4843",
+        "id":3
+    },{
+        "url": "opc.tcp://machine:4844",
+        "id":4
+    },{
+        "url": "opc.tcp://machine:4845",
+        "id":5
+    },{
+        "url": "opc.tcp://machine:4846",
+        "id":6
+    },{
+        "url": "opc.tcp://machine:4847",
+        "id":7
+    },{
+        "url": "opc.tcp://machine:4848",
+        "id":8
+    },{
+        "url": "opc.tcp://machine:4849",
+        "id":9
+    }
+]
