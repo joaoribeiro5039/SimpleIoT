@@ -24,7 +24,7 @@ with open("monitorconfig.json", "r") as f:
 
 for server in jsonservers:
 
-    kafka_broker = "database:9092"
+    kafka_broker = "cloud:9092"
     conf = {
         'bootstrap.servers': kafka_broker,
         'client.id': 'my_producer',
