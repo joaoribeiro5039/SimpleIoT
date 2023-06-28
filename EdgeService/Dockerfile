@@ -1,8 +1,5 @@
-FROM ubuntu
+FROM python:3.11-slim
 
-RUN mkdir /edgeservice
-RUN apt update
-RUN apt install python3 -y
 RUN pip install --upgrade pip
 RUN pip install opcua
 RUN pip install confluent-kafka
@@ -10,8 +7,6 @@ RUN pip install confluent-kafka
 WORKDIR /usr/src/edgeservice
 
 COPY edgeservice.py .
-
-RUN sudo apt-get install build-essential
 
 EXPOSE 4840 
 EXPOSE 4841 

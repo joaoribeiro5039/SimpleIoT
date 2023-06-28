@@ -1,4 +1,6 @@
-FROM python:3-alpine
+FROM python:3.11-slim
+
+
 RUN mkdir /MonitorService
 WORKDIR /usr/src/MonitorService
 COPY MonitorService.py .
