@@ -1,33 +1,33 @@
 [
     {
-        "url": "opc.tcp://localhost:4840",
+        "url": "opc.tcp://machine:4840",
         "id":0
     },{
-        "url": "opc.tcp://localhost:4841",
+        "url": "opc.tcp://machine:4841",
         "id":1
     },{
-        "url": "opc.tcp://localhost:4842",
+        "url": "opc.tcp://machine:4842",
         "id":2
     },{
-        "url": "opc.tcp://localhost:4843",
+        "url": "opc.tcp://machine:4843",
         "id":3
     },{
-        "url": "opc.tcp://localhost:4844",
+        "url": "opc.tcp://machine:4844",
         "id":4
     },{
-        "url": "opc.tcp://localhost:4845",
+        "url": "opc.tcp://machine:4845",
         "id":5
     },{
-        "url": "opc.tcp://localhost:4846",
+        "url": "opc.tcp://machine:4846",
         "id":6
     },{
-        "url": "opc.tcp://localhost:4847",
+        "url": "opc.tcp://machine:4847",
         "id":7
     },{
-        "url": "opc.tcp://localhost:4848",
+        "url": "opc.tcp://machine:4848",
         "id":8
     },{
-        "url": "opc.tcp://localhost:4849",
+        "url": "opc.tcp://machine:4849",
         "id":9
     }
 ]

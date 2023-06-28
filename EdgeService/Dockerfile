@@ -7,17 +7,6 @@ RUN pip install confluent-kafka
 WORKDIR /usr/src/edgeservice
 
 COPY edgeservice.py .
-
-EXPOSE 4840 
-EXPOSE 4841 
-EXPOSE 4842 
-EXPOSE 4843
-EXPOSE 4844
-EXPOSE 4845
-EXPOSE 4846
-EXPOSE 4847
-EXPOSE 4848
-EXPOSE 4849
-EXPOSE 9092
+COPY monitorconfig.json .
 
 CMD ["python","edgeservice.py","--host","0.0.0.0"]

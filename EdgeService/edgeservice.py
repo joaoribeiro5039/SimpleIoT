@@ -3,10 +3,8 @@ import time
 from opcua import Client
 from opcua import ua
 from typing import Optional
-import pika
 import json
 import datetime
-import threading
 from confluent_kafka import Producer
 import concurrent.futures
 
@@ -26,7 +24,7 @@ with open("monitorconfig.json", "r") as f:
 
 for server in jsonservers:
 
-    kafka_broker = "localhost:9092"
+    kafka_broker = "database:9092"
     conf = {
         'bootstrap.servers': kafka_broker,
         'client.id': 'my_producer',
