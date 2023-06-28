@@ -1,84 +1,19 @@
 version: '3'
 services:
-  simpleopcua1:
+  edgeservice:
     build:
-      context: ./SimpleOPCUAServer
+      context: ./EdgeService
       dockerfile: Dockerfile
     ports:
-      - "4841:4840"
+      - "4840:4840"
+      - "4841:4841"
+      - "4842:4842"
+      - "4843:4843"
+      - "4844:4844"
+      - "4845:4845"
+      - "4846:4846"
+      - "4847:4847"
+      - "4848:4848"
+      - "4849:4849"
+      - "9092:9092"
     restart: unless-stopped
-
-  simpleopcua2:
-    build:
-      context: ./SimpleOPCUAServer
-      dockerfile: Dockerfile
-    ports:
-      - "4842:4840"
-    restart: unless-stopped
-
-  simpleopcua3:
-    build:
-      context: ./SimpleOPCUAServer
-      dockerfile: Dockerfile
-    ports:
-      - "4843:4840"
-    restart: unless-stopped
-
-  simpleopcua4:
-    build:
-      context: ./SimpleOPCUAServer
-      dockerfile: Dockerfile
-    ports:
-      - "4844:4840"
-    restart: unless-stopped
-
-  simpleopcua5:
-    build:
-      context: ./SimpleOPCUAServer
-      dockerfile: Dockerfile
-    ports:
-      - "4845:4840"
-    restart: unless-stopped
-
-  simpleopcua6:
-    build:
-      context: ./SimpleOPCUAServer
-      dockerfile: Dockerfile
-    ports:
-      - "4846:4840"
-    restart: unless-stopped
-
-  simpleopcua7:
-    build:
-      context: ./SimpleOPCUAServer
-      dockerfile: Dockerfile
-    ports:
-      - "4847:4840"
-    restart: unless-stopped
-
-  simpleopcua8:
-    build:
-      context: ./SimpleOPCUAServer
-      dockerfile: Dockerfile
-    ports:
-      - "4848:4840"
-    restart: unless-stopped
-
-  simpleopcua9:
-    build:
-      context: ./SimpleOPCUAServer
-      dockerfile: Dockerfile
-    ports:
-      - "4849:4840"
-    restart: unless-stopped
-
-  portainer:
-    image: portainer/portainer-ce:latest
-    ports:
-      - 9443:9443
-    volumes:
-        - data:/data
-        - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-volumes:
-  data:
