@@ -52,7 +52,7 @@ try:
 
     for server in jsonservers:
 
-        kafka_broker = "cloud:9092"
+        kafka_broker = "0.0.0.0:9092"
         conf = {
             'bootstrap.servers': kafka_broker,
         }
