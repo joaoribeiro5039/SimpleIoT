@@ -17,35 +17,11 @@ global Kafka_Producer
 Kafka_Producer = []
 
 
-
-# create objects and variables from json file
-with open("monitorconfig.json", "r") as f:
-    jsonservers = json.load(f)
-
-for server in jsonservers:
-
-    kafka_broker = "cloud:9092"
-    conf = {
-        'bootstrap.servers': kafka_broker,
-        'client.id': 'my_producer',
-        'acks': 'all'
-    }
-    producer = Producer(conf)
-    opc_client = Client(server["url"])
-    print(server["url"])
-    opc_client.connect()
-    obj = {
-        "opc_client": opc_client,
-        "kafka_producer": producer,
-        "id": server["id"],
-        "url": server["url"]
-    }
-    machine_clients.append(obj)
-
 def Get_Nodes(opcClient, kafkaprod,kafkatopicprefix):
         root = opcClient.get_root_node()
         objects = root.get_children()[0]
         nodes = objects.get_children()
+        print(kafkatopicprefix)
         for node in nodes:
                 for subnode in node.get_children():
                     node_id = str(subnode)
@@ -60,18 +36,40 @@ def Get_Nodes(opcClient, kafkaprod,kafkatopicprefix):
                                 'Value': str(value)
                             }
                         message_str = json.dumps(message)
-                        # kafkaprod.produce(topic, value=message_str)
-                        print(message_str)
+                        print(kafkaprod.produce(topic, value=message_str))
+                        print( topic + " -> " + message_str)
 
 def process_machine_client(machine_client):
     print(machine_client["url"])
     Get_Nodes(machine_client["opc_client"], machine_client["kafka_producer"], str(machine_client["id"]))
 
 try:
-    time.sleep(0.01)
-    while True:    
-        for machine_client in machine_clients:
-            Get_Nodes(machine_client["opc_client"], machine_client["kafka_producer"], str(machine_client["id"]))
+    
+    # create objects and variables from json file
+    with open("monitorconfig.json", "r") as f:
+        jsonservers = json.load(f)
+
+    for server in jsonservers:
+
+        kafka_broker = "cloud:9092"
+        conf = {
+            'bootstrap.servers': kafka_broker,
+        }
+        producer = Producer(conf)
+        opc_client = Client(server["url"])
+        opc_client.connect()
+        obj = {
+            "opc_client": opc_client,
+            "kafka_producer": producer,
+            "id": server["id"],
+            "url": server["url"]
+        }
+        machine_clients.append(obj)
+
+    while True:
+        time.sleep(0.01)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(machine_clients)) as executor:
+            futures = [executor.submit(process_machine_client, machine_client) for machine_client in machine_clients]
 
 finally:
     for machine_client in machine_clients:
