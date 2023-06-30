@@ -1,9 +1,11 @@
 version: '3'
 services:
   edgeservice:
+    container_name: edgeservice
     build:
       context: ./EdgeService
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "4840:4840"
       - "4841:4841"
@@ -16,4 +18,3 @@ services:
       - "4848:4848"
       - "4849:4849"
       - "9092:9092"
-    restart: unless-stopped

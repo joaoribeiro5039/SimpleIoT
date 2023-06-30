@@ -1,6 +1,7 @@
 version: '3'
 services:
   simpleopcua0:
+    container_name: simpleopcua0
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -8,6 +9,7 @@ services:
       - "4840:4840"
     restart: unless-stopped
   simpleopcua1:
+    container_name: simpleopcua1
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -16,6 +18,7 @@ services:
     restart: unless-stopped
 
   simpleopcua2:
+    container_name: simpleopcua2
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -24,6 +27,7 @@ services:
     restart: unless-stopped
 
   simpleopcua3:
+    container_name: simpleopcua3
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -32,6 +36,7 @@ services:
     restart: unless-stopped
 
   simpleopcua4:
+    container_name: simpleopcua4
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -40,6 +45,7 @@ services:
     restart: unless-stopped
 
   simpleopcua5:
+    container_name: simpleopcua5
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -48,6 +54,7 @@ services:
     restart: unless-stopped
 
   simpleopcua6:
+    container_name: simpleopcua6
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -56,6 +63,7 @@ services:
     restart: unless-stopped
 
   simpleopcua7:
+    container_name: simpleopcua7
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -64,6 +72,7 @@ services:
     restart: unless-stopped
 
   simpleopcua8:
+    container_name: simpleopcua8
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
@@ -72,20 +81,10 @@ services:
     restart: unless-stopped
 
   simpleopcua9:
+    container_name: simpleopcua9
     build:
       context: ./SimpleOPCUAServer
       dockerfile: Dockerfile
     ports:
       - "4849:4840"
     restart: unless-stopped
-
-  portainer:
-    image: portainer/portainer-ce:latest
-    ports:
-      - 9443:9443
-    volumes:
-        - data:/data
-        - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-volumes:
-  data:

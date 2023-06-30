@@ -32,6 +32,7 @@ for server in jsonservers:
     }
     producer = Producer(conf)
     opc_client = Client(server["url"])
+    print(server["url"])
     opc_client.connect()
     obj = {
         "opc_client": opc_client,
@@ -59,7 +60,8 @@ def Get_Nodes(opcClient, kafkaprod,kafkatopicprefix):
                                 'Value': str(value)
                             }
                         message_str = json.dumps(message)
-                        kafkaprod.produce(topic, value=message_str)
+                        # kafkaprod.produce(topic, value=message_str)
+                        print(message_str)
 
 def process_machine_client(machine_client):
     print(machine_client["url"])
@@ -67,10 +69,9 @@ def process_machine_client(machine_client):
 
 try:
     time.sleep(0.01)
-    # Create a ThreadPoolExecutor with maximum worker threads
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = [executor.submit(process_machine_client, machine_client) for machine_client in machine_clients]
-    concurrent.futures.wait(futures)
+    while True:    
+        for machine_client in machine_clients:
+            Get_Nodes(machine_client["opc_client"], machine_client["kafka_producer"], str(machine_client["id"]))
 
 finally:
     for machine_client in machine_clients:
