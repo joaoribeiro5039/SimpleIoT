@@ -38,6 +38,7 @@ def Get_Nodes(opcClient, kafkaprod,kafkatopicprefix):
                         message_str = json.dumps(message)
                         kafkaprod.produce(topic, value=message_str)
                         print(topic)
+        kafkaprod.flush()
 
 def process_machine_client(machine_client):
     print(machine_client["url"])
@@ -67,7 +68,7 @@ try:
         machine_clients.append(obj)
 
     while True:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(machine_clients)) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             futures = [executor.submit(process_machine_client, machine_client) for machine_client in machine_clients]
 
 finally:
