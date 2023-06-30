@@ -67,7 +67,7 @@ try:
         machine_clients.append(obj)
 
     while True:
-        time.sleep(0.25)
+        time.sleep(0.1)
         with concurrent.futures.ThreadPoolExecutor(max_workers=len(machine_clients)) as executor:
             futures = [executor.submit(process_machine_client, machine_client) for machine_client in machine_clients]
 
