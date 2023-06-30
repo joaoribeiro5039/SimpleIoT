@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 RUN pip install --upgrade pip
 RUN pip install opcua
-RUN pip install confluent-kafka
+RUN pip install pika
 
 WORKDIR /usr/src/edgeservice
 

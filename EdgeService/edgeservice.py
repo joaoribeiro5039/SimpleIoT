@@ -5,7 +5,7 @@ from opcua import ua
 from typing import Optional
 import json
 import datetime
-from confluent_kafka import Producer
+from pika
 import concurrent.futures
 
 
@@ -36,7 +36,7 @@ def Get_Nodes(opcClient, kafkaprod,kafkatopicprefix):
                                 'Value': str(value)
                             }
                         message_str = json.dumps(message)
-                        kafkaprod.produce(topic, value=message_str)
+                        channel.basic_publish(exchange='', routing_key=queue_name, body=message)
                         print(topic)
         kafkaprod.flush()
 
@@ -51,12 +51,20 @@ try:
         jsonservers = json.load(f)
 
     for server in jsonservers:
+        # RabbitMQ connection parameters
+        connection_params = pika.ConnectionParameters('localhost')
+        
+        # Create a connection to the RabbitMQ broker
+        connection = pika.BlockingConnection(connection_params)
+        
+        # Create a channel
+        channel = connection.channel()
+        
+        # Declare a queue
+        queue_name = 'my_queue'
+        channel.queue_declare(queue=queue_name)
 
-        kafka_broker = "0.0.0.0:9092"
-        conf = {
-            'bootstrap.servers': kafka_broker,
-        }
-        producer = Producer(conf)
+
         opc_client = Client(server["url"])
         opc_client.connect()
         obj = {
