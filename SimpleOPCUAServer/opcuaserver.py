@@ -42,7 +42,7 @@ def get_Speed_value(time, amplitude):
 try:
     start_time = time.time()
     while True:
-        time.sleep(0.01)
+        time.sleep(0.001)
         end_time = time.time()
         timeElapsed = round(end_time - start_time,6)
         for node in jsonnodes:
