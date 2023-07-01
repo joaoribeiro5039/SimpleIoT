@@ -25,7 +25,7 @@ Kafka_Producer = Producer(producer_config)
 for i in range(10):
     server = Server()
     server.name = "SimpleOPCUA"
-    endpoint = "opc.tcp://localhost:484" + str(i)
+    endpoint = "opc.tcp://0.0.0.0:484" + str(i)
     server.set_endpoint(endpoint)
     obj = {
         "opcserver" : server,
