@@ -6,15 +6,13 @@ import json
 import numpy as np
 import pika
 
-
-
 global opc_servers
 opc_servers = []
 
 for i in range(10):
 
     credentials = pika.PlainCredentials('admin', 'admin')
-    connection_params = pika.ConnectionParameters('cloud', credentials=credentials)
+    connection_params = pika.ConnectionParameters('0.0.0.0', credentials=credentials)
     connection = pika.BlockingConnection(connection_params)
 
     rabbitmq_array = []
