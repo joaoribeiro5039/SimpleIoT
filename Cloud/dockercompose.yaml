@@ -11,7 +11,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=admin
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    restart: unless-stopped
+    restart: always
 
 volumes:
   rabbitmq_data:
