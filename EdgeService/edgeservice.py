@@ -7,18 +7,22 @@ import json
 import datetime
 import pika
 import concurrent.futures
+from confluent_kafka import Producer
 
 
 
 global machine_clients
 machine_clients = []
 
+conf = {'bootstrap.servers': 'cloud:9092'}
 global Kafka_Producer
-Kafka_Producer = []
+Kafka_Producer = Producer(conf)
 
 
 def Get_Nodes(opcClient, rabbitmq_connect,rabbitmq_queue):
         
+        global Kafka_Producer
+        rabbitmq_queue = "Server_" + rabbitmq_queue
         rabbitmq_channel = rabbitmq_connect.channel()
         rabbitmq_channel.queue_declare(queue=rabbitmq_queue)
 
@@ -38,7 +42,8 @@ def Get_Nodes(opcClient, rabbitmq_connect,rabbitmq_queue):
                                 'Value': str(value)
                             }
                         message_str = json.dumps(message)
-                        rabbitmq_channel.basic_publish(exchange='', routing_key=rabbitmq_queue, body=message_str)
+                        Kafka_Producer.produce(rabbitmq_queue + "_" + node_id, message)
+                        # rabbitmq_channel.basic_publish(exchange='', routing_key=rabbitmq_queue, body=message_str)
 
 def process_machine_client(machine_client):
     print(machine_client["url"])

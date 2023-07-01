@@ -3,6 +3,7 @@ FROM python:3.11-slim
 RUN pip install --upgrade pip
 RUN pip install opcua
 RUN pip install pika
+RUN pip install confluent-kafka
 
 WORKDIR /usr/src/edgeservice
 
@@ -21,6 +22,7 @@ EXPOSE 4848
 EXPOSE 4849
 EXPOSE 4849
 EXPOSE 5672
+EXPOSE 9092
 
 
 CMD ["python","edgeservice.py"]
