@@ -4,6 +4,7 @@ import random
 import datetime
 import json
 import numpy as np
+import pika
 
 
 
@@ -11,12 +12,18 @@ global opc_servers
 opc_servers = []
 
 for i in range(10):
+
+    credentials = pika.PlainCredentials('admin', 'admin')
+    connection_params = pika.ConnectionParameters('cloud', credentials=credentials)
+    connection = pika.BlockingConnection(connection_params)
+    
     server = Server()
     server.name = "SimpleOPCUA"
     endpoint = "opc.tcp://0.0.0.0:484" + str(i)
     server.set_endpoint(endpoint)
     obj = {
         "opcserver" : server,
+        "rabbitmq_connect": connection,
         "id" : i
     }
     opc_servers.append(obj)
@@ -65,6 +72,11 @@ def UpdateServerValues(server, starttime):
         server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".DateTime").set_value(dt_time)
         server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".Temperature").set_value(temperature)
         server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".Speed").set_value(speed)
+        topic =  "Server_" + str(server["id"]) + "_Motor_" + str(i+1)
+        rabbitmq_channel = server["rabbitmq_connect"].channel()
+        rabbitmq_channel.queue_declare(queue=topic)
+        data_str = json.dumps(data)
+        rabbitmq_channel.basic_publish(exchange='', routing_key=topic, body=data_str)
 try:
     start_time = time.time()
     while True:
