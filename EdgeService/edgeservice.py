@@ -7,50 +7,40 @@ import json
 import datetime
 import pika
 import concurrent.futures
-from confluent_kafka import Producer
-
 
 
 global machine_clients
 machine_clients = []
 
-conf = {'bootstrap.servers': 'cloud:9092'}
-global Kafka_Producer
-Kafka_Producer = Producer(conf)
-
 
 def Get_Nodes(opcClient, rabbitmq_connect,rabbitmq_queue):
-        
-        global Kafka_Producer
-        rabbitmq_queue = "Server_" + rabbitmq_queue
-        rabbitmq_channel = rabbitmq_connect.channel()
-        rabbitmq_channel.queue_declare(queue=rabbitmq_queue)
-
-        root = opcClient.get_root_node()
-        objects = root.get_children()[0]
-        nodes = objects.get_children()
-        for node in nodes:
-                for subnode in node.get_children():
-                    node_id = str(subnode)
-                    if "ns=1" in node_id:
-                        value = opcClient.get_node(node_id).get_value()
-                        timestamp = datetime.datetime.now()
-                        timestamp_str = timestamp.isoformat()
-                        message = {
-                                'Node': node_id,
-                                'TimeStamp': timestamp_str,
-                                'Value': str(value)
-                            }
-                        message_str = json.dumps(message)
-                        Kafka_Producer.produce(rabbitmq_queue + "_" + node_id, message)
-                        # rabbitmq_channel.basic_publish(exchange='', routing_key=rabbitmq_queue, body=message_str)
+    rabbitmq_queue = "Server_" + rabbitmq_queue
+    rabbitmq_channel = rabbitmq_connect.channel()
+    rabbitmq_channel.queue_declare(queue=rabbitmq_queue)
+    root = opcClient.get_root_node()
+    objects = root.get_children()[0]
+    nodes = objects.get_children()
+    for node in nodes:
+        for subnode in node.get_children():
+            node_id = str(subnode)
+            if "ns=1" in node_id:
+                value = opcClient.get_node(node_id).get_value()
+                timestamp = datetime.datetime.now()
+                timestamp_str = timestamp.isoformat()
+                message = {
+                        'Node': node_id,
+                        'TimeStamp': timestamp_str,
+                        'Value': str(value)
+                    }
+                message_str = json.dumps(message)
+                rabbitmq_channel.basic_publish(exchange='', routing_key=rabbitmq_queue, body=message_str)
 
 def process_machine_client(machine_client):
     print(machine_client["url"])
     Get_Nodes(machine_client["opc_client"], machine_client["rabbitmq_connect"], str(machine_client["id"]))
 
 try:
-    
+
     # create objects and variables from json file
     with open("monitorconfig.json", "r") as f:
         jsonservers = json.load(f)
