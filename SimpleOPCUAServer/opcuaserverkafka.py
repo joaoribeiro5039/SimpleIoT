@@ -4,11 +4,23 @@ import random
 import datetime
 import json
 import numpy as np
+from confluent_kafka import Producer
 
 
 
 global opc_servers
 opc_servers = []
+
+global Kafka_Producer
+
+bootstrap_servers = 'cloud:9092'
+producer_config = {
+    'bootstrap.servers': bootstrap_servers,
+    'client.id': 'my-producer',
+    'acks': 'all'
+}
+Kafka_Producer = Producer(producer_config)
+
 
 for i in range(10):
     server = Server()
@@ -65,12 +77,18 @@ def UpdateServerValues(server, starttime):
         server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".DateTime").set_value(dt_time)
         server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".Temperature").set_value(temperature)
         server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".Speed").set_value(speed)
+
+        topic =  "Server_" + str(server["id"]) + "_Motor_" + str(i+1)
+        print(topic)
+        data_str = json.dumps(data)
+        Kafka_Producer.produce(topic, value=data_str)
 try:
     start_time = time.time()
     while True:
         start_time_Timer = time.time()
         for server in opc_servers:
             UpdateServerValues(server,start_time)
+        Kafka_Producer.flush()
         end_time_Timer = time.time()
         print(end_time_Timer - start_time_Timer)
 
