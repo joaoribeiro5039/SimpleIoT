@@ -1,15 +1,15 @@
 version: '3'
 services:
-  grafana:
-    image: grafana/grafana
-    ports:
-      - 3000:3000
-    volumes:
-      - grafana-data:/var/lib/grafana
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    restart: always
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   restart: always
     
   cassandra:
     image: cassandra:latest
@@ -19,14 +19,14 @@ services:
     volumes:
       - cassandra-data:/var/lib/cassandra
 
-  dataservice:
-    container_name: dataservice
-    build:
-      context: ./DataService
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    ports:
-      - "5672:5672"
+  # dataservice:
+  #   container_name: dataservice
+  #   build:
+  #     context: ./DataService
+  #     dockerfile: Dockerfile
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5672:5672"
 
 volumes:
   grafana-data:
