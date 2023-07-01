@@ -80,6 +80,7 @@ services:
       - "4848:4840"
     restart: unless-stopped
 
+
   simpleopcua9:
     container_name: simpleopcua9
     build:
