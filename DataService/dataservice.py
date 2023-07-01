@@ -1,5 +1,6 @@
 import pika
 from cassandra.cluster import Cluster
+import concurrent.futures
 
 # RabbitMQ connection parameters
 
@@ -9,7 +10,7 @@ for i in range(10):
     for imotor in range(1,6):
         queue = "Server_" + str(i) + "_Motor_" + str(imotor)
         credentials = pika.PlainCredentials('admin', 'admin')
-        connection_params = pika.ConnectionParameters('cloud', credentials=credentials)
+        connection_params = pika.ConnectionParameters('localhost', credentials=credentials)
         connection = pika.BlockingConnection(connection_params)
         rabbitmq_channel = connection.channel()
         obj = {
@@ -19,7 +20,7 @@ for i in range(10):
         rabbitmq_queues.append(obj)
 
 # Cassandra connection parameters
-cassandra_host = "database"
+cassandra_host = "localhost"
 cassandra_keyspace = "simpleiot"
 
 # Connect to RabbitMQ
@@ -33,7 +34,7 @@ session.set_keyspace(cassandra_keyspace)
 
 # Create tables in Cassandra if they don't exist
 for rabbitmq_queue in rabbitmq_queues:
-    session.execute("CREATE TABLE IF NOT EXISTS "+ rabbitmq_queue +  " (id UUID PRIMARY KEY,message TEXT)")
+    session.execute("CREATE TABLE IF NOT EXISTS "+ rabbitmq_queue["queue"] +  " (id UUID PRIMARY KEY,message TEXT)")
 
 # Callback function to process messages from RabbitMQ
 def process_message(channel, method, properties, body):
@@ -48,6 +49,13 @@ def process_message(channel, method, properties, body):
 # Start consuming messages from RabbitMQ queues
 
 for rabbitmq_queue in rabbitmq_queues:
-    rabbitmq_queue["channel"].basic_consume(queue=rabbitmq_queue["rabbitmq_queue"], on_message_callback=process_message)
+    rabbitmq_queue["channel"].basic_consume(queue=rabbitmq_queue["queue"], on_message_callback=process_message)
+    
 
-rabbitmq_channel.start_consuming()
+def process_machine_client(rmq_channel):
+    rmq_channel.start_consuming()
+
+
+print(len(rabbitmq_queues))
+with concurrent.futures.ThreadPoolExecutor(max_workers=len(rabbitmq_queues)) as executor:
+    futures = [executor.submit(process_machine_client, rmq_channel["channel"]) for rmq_channel in rabbitmq_queues]

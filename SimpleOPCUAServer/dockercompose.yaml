@@ -16,5 +16,19 @@ services:
       - "4847:4847"
       - "4848:4848"
       - "4849:4849"
-      - "9092:9092"
     restart: unless-stopped
+  
+  rabbitmq:
+    image: rabbitmq:3.9.11-management
+    ports:
+      - "5672:5672"  # RabbitMQ default port
+      - "15672:15672"  # RabbitMQ management console port
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: always
+
+volumes:
+  rabbitmq_data:

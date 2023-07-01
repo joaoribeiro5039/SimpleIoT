@@ -12,7 +12,7 @@ opc_servers = []
 for i in range(10):
 
     credentials = pika.PlainCredentials('admin', 'admin')
-    connection_params = pika.ConnectionParameters('0.0.0.0', credentials=credentials)
+    connection_params = pika.ConnectionParameters('rabbitmq', credentials=credentials)
     connection = pika.BlockingConnection(connection_params)
 
     rabbitmq_array = []
@@ -71,6 +71,7 @@ def get_Speed_value(time, amplitude):
 def UpdateServerValues(server, starttime):
     end_time = time.time()
     timeElapsed = round(end_time - starttime,6)
+    time.sleep(0.5)
     for rabbitmq in server["rabbit_MQ"]:
         temperature = get_Temperature_value(timeElapsed,5.0 + rabbitmq["id"]*10.0)
         speed = get_Speed_value(timeElapsed,200.0 + rabbitmq["id"]*100.0)

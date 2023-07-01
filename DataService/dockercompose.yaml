@@ -19,14 +19,14 @@ services:
     volumes:
       - cassandra-data:/var/lib/cassandra
 
-  # dataservice:
-  #   container_name: dataservice
-  #   build:
-  #     context: ./DataService
-  #     dockerfile: Dockerfile
-  #   restart: unless-stopped
-  #   ports:
-  #     - "5672:5672"
+  dataservice:
+    container_name: dataservice
+    build:
+      context: ./DataService
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
 
 volumes:
   grafana-data:
