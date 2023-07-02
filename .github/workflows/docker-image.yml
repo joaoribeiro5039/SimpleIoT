@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   publish-simpleopcua:
-    name: Test building to Docker Hub
+    name: Publish simpleopcua to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -27,7 +27,7 @@ jobs:
         run: docker push joaoribeiro5039/simpleiot-simpleopcua:latest
   
   publish-dataprocess:
-    name: Test building to Docker Hub
+    name: Publish dataprocess to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
