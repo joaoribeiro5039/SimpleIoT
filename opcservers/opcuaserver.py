@@ -4,38 +4,43 @@ import random
 import datetime
 import json
 import numpy as np
-from confluent_kafka import Producer
-
-
+import pika
 
 global opc_servers
 opc_servers = []
 
-global Kafka_Producer
-
-bootstrap_servers = 'cloud:9092'
-producer_config = {
-    'bootstrap.servers': bootstrap_servers,
-    'client.id': 'my-producer',
-    'acks': 'all'
-}
-Kafka_Producer = Producer(producer_config)
-
-
 for i in range(10):
+
+    credentials = pika.PlainCredentials('admin', 'admin')
+    connection_params = pika.ConnectionParameters('rabbitmq', credentials=credentials)
+    connection = pika.BlockingConnection(connection_params)
+
+    rabbitmq_array = []
+    for i_rabbit in range(1,6):
+        topic =  "Server_" + str(i) + "_Motor_" + str(i_rabbit)
+        rabbitmq_channel = connection.channel()
+        rabbitmq_channel.queue_declare(queue=topic)
+        rabbitmq_obj = {
+            "rabbitmq_channel": rabbitmq_channel,
+            "rabbitmq_topic": topic,
+            "id" : i_rabbit
+        }
+        rabbitmq_array.append(rabbitmq_obj)
+    
+
     server = Server()
     server.name = "SimpleOPCUA"
     endpoint = "opc.tcp://0.0.0.0:484" + str(i)
     server.set_endpoint(endpoint)
     obj = {
         "opcserver" : server,
+        "rabbit_MQ" : rabbitmq_array,
         "id" : i
     }
     opc_servers.append(obj)
     print(i)
     print(endpoint)
 
-# create objects and variables from json file
 with open("nodes.json", "r") as f:
     jsonnodes = json.load(f)
 
@@ -65,30 +70,27 @@ def get_Speed_value(time, amplitude):
 def UpdateServerValues(server, starttime):
     end_time = time.time()
     timeElapsed = round(end_time - starttime,6)
-    for i in range(4):
-        temperature = get_Temperature_value(timeElapsed,10.0 + i*10.0)
-        speed = get_Speed_value(timeElapsed,300.0 + i*100.0)
+    for rabbitmq in server["rabbit_MQ"]:
+        temperature = get_Temperature_value(timeElapsed,5.0 + rabbitmq["id"]*10.0)
+        speed = get_Speed_value(timeElapsed,200.0 + rabbitmq["id"]*100.0)
         dt_time = datetime.datetime.now()
         data = {
             'Temperature': str(temperature),
             'Speed': str(speed),
             'DateTime': str(dt_time)
             }
-        server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".DateTime").set_value(dt_time)
-        server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".Temperature").set_value(temperature)
-        server["opcserver"].get_node("ns=1;s=Motor" + str(i+1) + ".Speed").set_value(speed)
-
-        topic =  "Server_" + str(server["id"]) + "_Motor_" + str(i+1)
-        print(topic)
+        server["opcserver"].get_node("ns=1;s=Motor" + str(rabbitmq["id"]) + ".DateTime").set_value(dt_time)
+        server["opcserver"].get_node("ns=1;s=Motor" + str(rabbitmq["id"]) + ".Temperature").set_value(temperature)
+        server["opcserver"].get_node("ns=1;s=Motor" + str(rabbitmq["id"]) + ".Speed").set_value(speed)
         data_str = json.dumps(data)
-        Kafka_Producer.produce(topic, value=data_str)
+        rabbitmq["rabbitmq_channel"].basic_publish(exchange='', routing_key=rabbitmq["rabbitmq_topic"], body=data_str)
 try:
     start_time = time.time()
     while True:
+        time.sleep(0.1)
         start_time_Timer = time.time()
         for server in opc_servers:
             UpdateServerValues(server,start_time)
-        Kafka_Producer.flush()
         end_time_Timer = time.time()
         print(end_time_Timer - start_time_Timer)
 

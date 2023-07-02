@@ -1,0 +1,76 @@
+version: '3'
+services:
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.9.11-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: always
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - 9042:9042
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    depends_on:
+      - rabbitmq
+
+  simpleopcua:
+    container_name: simpleopcua
+    build:
+      context: /opcservers
+      dockerfile: Dockerfile
+    ports:
+      - "4840:4840"
+      - "4841:4841"
+      - "4842:4842"
+      - "4843:4843"
+      - "4844:4844"
+      - "4845:4845"
+      - "4846:4846"
+      - "4847:4847"
+      - "4848:4848"
+      - "4849:4849"
+    restart: unless-stopped
+    depends_on:
+      - cassandra
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "2"
+    #       memory: "1g"
+    #     reservations:
+    #       cpus: "1"
+    #       memory: "512m"
+
+  dataprocess:
+    container_name: dataprocess
+    build:
+      context: /dataprocess
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - simpleopcua
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: always
+
+volumes:
+  rabbitmq_data:
+  cassandra-data:
+  grafana_data:

@@ -1,4 +1,0 @@
-numpy
-opcua
-confluent_kafka
-pika
