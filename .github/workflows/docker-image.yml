@@ -17,11 +17,11 @@ jobs:
 
       - name: Build the Docker image simpleopcua
         working-directory: ./src/opcservers
-        run: docker build . --file Dockerfile --target simpleiot-simpleopcua --tag joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
+        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
         
       - name: Build the Docker image dataprocess
         working-directory: ./src/dataprocess
-        run: docker build . --file Dockerfile --target simpleiot-dataprocess --tag joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
+        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
 
       - name: Docker Push simpleopcua Current
         run: docker push joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
