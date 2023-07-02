@@ -43,14 +43,6 @@ services:
     restart: unless-stopped
     depends_on:
       - cassandra
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: "2"
-    #       memory: "1g"
-    #     reservations:
-    #       cpus: "1"
-    #       memory: "512m"
 
   dataprocess:
     container_name: dataprocess
