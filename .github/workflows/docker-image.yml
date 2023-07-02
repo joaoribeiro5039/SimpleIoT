@@ -1,18 +1,46 @@
-name: Docker Image CI
+name: Checks
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push]
 
 jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
+  test-not-lint:
+    name: Test but not Lint
+    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build ./opcservers --file Dockerfile --tag opcservers:$(date +%s)
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKERHUB_USER}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Test
+        working-directory: ./src
+        run: docker-compose up -d
+
+      - name: Build the Docker image simpleopcua
+        working-directory: ./src
+        run: docker build . --file Dockerfile --target simpleiot-simpleopcua --tag joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
+        
+      - name: Build the Docker image
+        working-directory: ./src
+        run: docker build . --file Dockerfile --target simpleiot-dataprocess --tag joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
+
+      - name: Docker Push simpleopcua Current
+        run: docker push joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
+
+      - name: Docker Push dataprocess Current
+        run: docker push joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
+
+
+      - name: Build Latest simpleopcua Docker image
+        working-directory: ./src
+        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-simpleopcua:latest
+      - name: Build Latest dataprocess Docker image
+        working-directory: ./src
+        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:latest
+
+      - name: Docker Push Latest simpleopcua
+        run: docker push joaoribeiro5039/simpleiot-simpleopcua:latest
+      - name: Docker Push Latest dataprocess
+        run: docker push joaoribeiro5039/simpleiot-dataprocess:latest
