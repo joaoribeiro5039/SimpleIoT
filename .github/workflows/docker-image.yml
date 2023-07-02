@@ -17,31 +17,14 @@ jobs:
 
       - name: Build the Docker image simpleopcua
         working-directory: ./src/opcservers
-        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
+        run: docker build . --file Dockerfile --tag simpleiot-simpleopcua
         
-      - name: Docker Push simpleopcua Current
-        run: docker push joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
-
       - name: Build Latest simpleopcua Docker image
-        working-directory: ./src
-        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-simpleopcua:latest
+        working-directory: ./src/opcservers
+        run: docker tag simpleiot-simpleopcua:joaoribeiro5039/simpleiot-simpleopcua:tag
 
       - name: Docker Push Latest simpleopcua
         run: docker push joaoribeiro5039/simpleiot-simpleopcua:latest
-
-      - name: Build the Docker image dataprocess
-        working-directory: ./src/dataprocess
-        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
-
-      - name: Docker Push dataprocess Current
-        run: docker push joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
-
-      - name: Build Latest dataprocess Docker image
-        working-directory: ./src
-        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:latest
-
-      - name: Docker Push Latest dataprocess
-        run: docker push joaoribeiro5039/simpleiot-dataprocess:latest
   
   publish-dataprocess:
     name: Test building to Docker Hub
