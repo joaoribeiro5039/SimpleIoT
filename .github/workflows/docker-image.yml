@@ -17,11 +17,11 @@ jobs:
 
       - name: Build the Docker image simpleopcua
         working-directory: ./src/opcservers
-        run: docker build . --file Dockerfile --tag simpleiot-simpleopcua
+        run: docker build . --file Dockerfile --tag simpleiot-simpleopcua:${{ steps.date.outputs.date }}
         
       - name: Build Latest simpleopcua Docker image
         working-directory: ./src/opcservers
-        run: docker tag simpleiot-simpleopcua:joaoribeiro5039/simpleiot-simpleopcua:tag
+        run: docker tag simpleiot-simpleopcua:${{ steps.date.outputs.date }} joaoribeiro5039/simpleiot-simpleopcua:latest
 
       - name: Docker Push Latest simpleopcua
         run: docker push joaoribeiro5039/simpleiot-simpleopcua:latest
@@ -40,11 +40,11 @@ jobs:
 
       - name: Build the Docker image simpleopcua
         working-directory: ./src/dataprocess
-        run: docker build . --file Dockerfile --tag simpleiot-dataprocess
+        run: docker build . --file Dockerfile --tag simpleiot-dataprocess:${{ steps.date.outputs.date }}
         
       - name: Build Latest simpleopcua Docker image
         working-directory: ./src/dataprocess
-        run: docker tag simpleiot-dataprocess:joaoribeiro5039/simpleiot-dataprocess:tag
+        run: docker tag simpleiot-dataprocess:${{ steps.date.outputs.date }} joaoribeiro5039/simpleiot-dataprocess:tag
 
       - name: Docker Push Latest simpleopcua
         run: docker push joaoribeiro5039/simpleiot-dataprocess:latest
