@@ -38,17 +38,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build the Docker image dataprocess
+      - name: Build the Docker image simpleopcua
         working-directory: ./src/dataprocess
-        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
+        run: docker build . --file Dockerfile --tag simpleiot-dataprocess
+        
+      - name: Build Latest simpleopcua Docker image
+        working-directory: ./src/dataprocess
+        run: docker tag simpleiot-dataprocess:joaoribeiro5039/simpleiot-dataprocess:tag
 
-      - name: Docker Push dataprocess Current
-        run: docker push joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
-
-      - name: Build Latest dataprocess Docker image
-        working-directory: ./src
-        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:latest
-
-      - name: Docker Push Latest dataprocess
+      - name: Docker Push Latest simpleopcua
         run: docker push joaoribeiro5039/simpleiot-dataprocess:latest
               
