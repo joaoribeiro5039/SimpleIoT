@@ -3,9 +3,9 @@ name: Checks
 on: [push]
 
 jobs:
-  test-not-lint:
+  publish-simpleopcua:
     name: Test building to Docker Hub
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -19,25 +19,53 @@ jobs:
         working-directory: ./src/opcservers
         run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
         
-      - name: Build the Docker image dataprocess
-        working-directory: ./src/dataprocess
-        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
-
       - name: Docker Push simpleopcua Current
         run: docker push joaoribeiro5039/simpleiot-simpleopcua:${{ steps.date.outputs.date }}
-
-      - name: Docker Push dataprocess Current
-        run: docker push joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
-
 
       - name: Build Latest simpleopcua Docker image
         working-directory: ./src
         run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-simpleopcua:latest
+
+      - name: Docker Push Latest simpleopcua
+        run: docker push joaoribeiro5039/simpleiot-simpleopcua:latest
+
+      - name: Build the Docker image dataprocess
+        working-directory: ./src/dataprocess
+        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
+
+      - name: Docker Push dataprocess Current
+        run: docker push joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
+
       - name: Build Latest dataprocess Docker image
         working-directory: ./src
         run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:latest
 
-      - name: Docker Push Latest simpleopcua
-        run: docker push joaoribeiro5039/simpleiot-simpleopcua:latest
       - name: Docker Push Latest dataprocess
         run: docker push joaoribeiro5039/simpleiot-dataprocess:latest
+  
+  publish-dataprocess:
+    name: Test building to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKERHUB_USER}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build the Docker image dataprocess
+        working-directory: ./src/dataprocess
+        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
+
+      - name: Docker Push dataprocess Current
+        run: docker push joaoribeiro5039/simpleiot-dataprocess:${{ steps.date.outputs.date }}
+
+      - name: Build Latest dataprocess Docker image
+        working-directory: ./src
+        run: docker build . --file Dockerfile --target production --tag joaoribeiro5039/simpleiot-dataprocess:latest
+
+      - name: Docker Push Latest dataprocess
+        run: docker push joaoribeiro5039/simpleiot-dataprocess:latest
+              
