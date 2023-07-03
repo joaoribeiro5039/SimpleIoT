@@ -94,7 +94,7 @@ jobs:
 
 
   test-docker-compose-with-dockerhub:
-    needs: publish-dataprocess
+    needs: publish-rabbitmqtocassandra
     name: Test Docker compose with Docker hub components
     runs-on: ubuntu-latest
     steps:
