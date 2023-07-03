@@ -21,6 +21,7 @@ jobs:
         run: docker compose up -d
   
   publish-simpleopcua:
+    needs: test-docker-compose
     name: Publish simpleopcua to DockerHub
     runs-on: ubuntu-latest
     steps:
@@ -44,6 +45,7 @@ jobs:
         run: docker push joaoribeiro5039/simpleiot-simpleopcua:latest
   
   publish-dataprocess:
+    needs: publish-simpleopcua
     name: Publish dataprocess to DockerHub
     runs-on: ubuntu-latest
     steps:
