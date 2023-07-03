@@ -52,6 +52,7 @@ services:
     image: joaoribeiro5039/rabbitmqtocassandra:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
       - RABBITMQ_BROKER_USER=admin
       - RABBITMQ_BROKER_PASSWORD=admin
       - CASSANDRA_DB_HOST=cassandra
