@@ -26,9 +26,7 @@ services:
 
   simpleopcua:
     container_name: simpleopcua
-    build:
-      context: ./opcservers
-      dockerfile: Dockerfile
+    image: joaoribeiro5039/simpleopcua:latest
     ports:
       - "4840:4840"
       - "4841:4841"
@@ -46,9 +44,7 @@ services:
 
   dataprocess:
     container_name: dataprocess
-    build:
-      context: ./dataprocess
-      dockerfile: Dockerfile
+    image: joaoribeiro5039/dataprocess:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
       - CASSANDRA_DB_HOST=cassandra
@@ -56,16 +52,6 @@ services:
     depends_on:
       - simpleopcua
 
-  grafana:
-    container_name: grafana
-    image: grafana/grafana
-    ports:
-      - 3000:3000
-    volumes:
-      - grafana_data:/var/lib/grafana
-    restart: always
-
 volumes:
   rabbitmq_data:
   cassandra-data:
-  grafana_data:

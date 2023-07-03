@@ -4,8 +4,8 @@ on: [push]
 
 jobs:
 
-  test-docker-compose:
-    name: Test Docker compose up
+  test-docker-compose-with-build:
+    name: Test Docker compose up with source code
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -18,10 +18,10 @@ jobs:
       - name: Docker Compose Action
         uses: isbang/compose-action@v1.4.1
         with:
-          compose-file: "./src/docker-compose.yml"
+          compose-file: "./src/docker-compose-build.yml"
   
   publish-simpleopcua:
-    needs: test-docker-compose
+    needs: test-docker-compose-with-build
     name: Publish simpleopcua to DockerHub
     runs-on: ubuntu-latest
     steps:
@@ -35,14 +35,14 @@ jobs:
 
       - name: Build the Docker image simpleopcua
         working-directory: ./src/opcservers
-        run: docker build . --file Dockerfile --tag simpleiot-simpleopcua:latest
+        run: docker build . --file Dockerfile --tag simpleopcua:latest
         
       - name: Build Latest simpleopcua Docker image
         working-directory: ./src/opcservers
-        run: docker tag simpleiot-simpleopcua:latest joaoribeiro5039/simpleiot-simpleopcua:latest
+        run: docker tag simpleopcua:latest joaoribeiro5039/simpleopcua:latest
 
       - name: Docker Push Latest simpleopcua
-        run: docker push joaoribeiro5039/simpleiot-simpleopcua:latest
+        run: docker push joaoribeiro5039/simpleopcua:latest
   
   publish-dataprocess:
     needs: publish-simpleopcua
@@ -59,12 +59,29 @@ jobs:
 
       - name: Build the Docker image simpleopcua
         working-directory: ./src/dataprocess
-        run: docker build . --file Dockerfile --tag simpleiot-dataprocess:latest
+        run: docker build . --file Dockerfile --tag dataprocess:latest
         
       - name: Build Latest simpleopcua Docker image
         working-directory: ./src/dataprocess
-        run: docker tag simpleiot-dataprocess:latest joaoribeiro5039/simpleiot-dataprocess:latest
+        run: docker tag dataprocess:latest joaoribeiro5039/dataprocess:latest
 
       - name: Docker Push Latest simpleopcua
-        run: docker push joaoribeiro5039/simpleiot-dataprocess:latest
+        run: docker push joaoribeiro5039/dataprocess:latest
+        
+  test-docker-compose-with-dockerhub:
+    needs: publish-dataprocess
+    name: Test Docker compose with Docker hub components
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKERHUB_USER}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Docker Compose Action
+        uses: isbang/compose-action@v1.4.1
+        with:
+          compose-file: "./src/docker-compose-dockerhub.yml"
               
