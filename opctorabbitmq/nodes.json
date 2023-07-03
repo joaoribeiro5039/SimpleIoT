@@ -1,0 +1,132 @@
+[
+    {
+        "node_id": "ns=1;s=Motor1",
+        "name": "Motor1",
+        "variables": [
+            {
+                "node_id": "ns=1;s=Motor1.Speed",
+                "name": "Speed",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor1.Temperature",
+                "name": "Temperature",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor1.State",
+                "name": "State",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor1.DateTime",
+                "name": "DateTime",
+                "value": 0
+            }
+        ]
+    },
+    {
+        "node_id": "ns=1;s=Motor2",
+        "name": "Motor2",
+        "variables": [
+            {
+                "node_id": "ns=1;s=Motor2.Speed",
+                "name": "Speed",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor2.Temperature",
+                "name": "Temperature",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor2.State",
+                "name": "State",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor2.DateTime",
+                "name": "DateTime",
+                "value": 0
+            }
+        ]
+    },
+    {
+        "node_id": "ns=1;s=Motor3",
+        "name": "Motor3",
+        "variables": [
+            {
+                "node_id": "ns=1;s=Motor3.Speed",
+                "name": "Speed",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor3.Temperature",
+                "name": "Temperature",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor3.State",
+                "name": "State",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor3.DateTime",
+                "name": "DateTime",
+                "value": 0
+            }
+        ]
+    },
+    {
+        "node_id": "ns=1;s=Motor4",
+        "name": "Motor4",
+        "variables": [
+            {
+                "node_id": "ns=1;s=Motor4.Speed",
+                "name": "Speed",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor4.Temperature",
+                "name": "Temperature",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor4.State",
+                "name": "State",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor4.DateTime",
+                "name": "DateTime",
+                "value": 0
+            }
+        ]
+    },
+    {
+        "node_id": "ns=1;s=Motor5",
+        "name": "Motor5",
+        "variables": [
+            {
+                "node_id": "ns=1;s=Motor5.Speed",
+                "name": "Speed",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor5.Temperature",
+                "name": "Temperature",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor5.State",
+                "name": "State",
+                "value": 0
+            },
+            {
+                "node_id": "ns=1;s=Motor5.DateTime",
+                "name": "DateTime",
+                "value": 0
+            }
+        ]
+    }
+]

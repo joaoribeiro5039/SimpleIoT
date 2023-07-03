@@ -18,7 +18,7 @@ jobs:
       - name: Docker Compose Action
         uses: isbang/compose-action@v1.4.1
         with:
-          compose-file: "./src/docker-compose-build.yml"
+          compose-file: "./docker-compose-build.yml"
   
   publish-simpleopcua:
     needs: test-docker-compose-with-build
@@ -34,11 +34,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build the Docker image simpleopcua
-        working-directory: ./src/opcservers
+        working-directory: ./opcservers
         run: docker build . --file Dockerfile --tag simpleopcua:latest
         
       - name: Build Latest simpleopcua Docker image
-        working-directory: ./src/opcservers
+        working-directory: ./opcservers
         run: docker tag simpleopcua:latest joaoribeiro5039/simpleopcua:latest
 
       - name: Docker Push Latest simpleopcua
@@ -58,11 +58,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build the Docker image simpleopcua
-        working-directory: ./src/dataprocess
+        working-directory: ./dataprocess
         run: docker build . --file Dockerfile --tag dataprocess:latest
         
       - name: Build Latest simpleopcua Docker image
-        working-directory: ./src/dataprocess
+        working-directory: ./dataprocess
         run: docker tag dataprocess:latest joaoribeiro5039/dataprocess:latest
 
       - name: Docker Push Latest simpleopcua
@@ -83,5 +83,5 @@ jobs:
       - name: Docker Compose Action
         uses: isbang/compose-action@v1.4.1
         with:
-          compose-file: "./src/docker-compose-dockerhub.yml"
+          compose-file: "./docker-compose-dockerhub.yml"
               
