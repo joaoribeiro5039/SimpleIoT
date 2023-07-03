@@ -20,9 +20,9 @@ jobs:
         with:
           compose-file: "./docker-compose-build.yml"
   
-  publish-simpleopcua:
+  publish-opcuaserver:
     needs: test-docker-compose-with-build
-    name: Publish simpleopcua to DockerHub
+    name: Publish opcuaserver to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -33,20 +33,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build the Docker image simpleopcua
+      - name: Build the Docker image opcuaserver
         working-directory: ./opcservers
-        run: docker build . --file Dockerfile --tag simpleopcua:latest
+        run: docker build . --file Dockerfile --tag opcuaserver:latest
         
-      - name: Build Latest simpleopcua Docker image
+      - name: Build Latest opcuaserver Docker image
         working-directory: ./opcservers
-        run: docker tag simpleopcua:latest joaoribeiro5039/simpleopcua:latest
+        run: docker tag opcuaserver:latest joaoribeiro5039/opcuaserver:latest
 
-      - name: Docker Push Latest simpleopcua
-        run: docker push joaoribeiro5039/simpleopcua:latest
+      - name: Docker Push Latest opcuaserver
+        run: docker push joaoribeiro5039/opcuaserver:latest
   
-  publish-dataprocess:
-    needs: publish-simpleopcua
-    name: Publish dataprocess to DockerHub
+  publish-opctorabbitmq:
+    needs: publish-opcuaserver
+    name: Publish opctorabbitmq to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -57,17 +57,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build the Docker image simpleopcua
-        working-directory: ./dataprocess
-        run: docker build . --file Dockerfile --tag dataprocess:latest
+      - name: Build the Docker image opctorabbitmq
+        working-directory: ./opcservers
+        run: docker build . --file Dockerfile --tag opctorabbitmq:latest
         
-      - name: Build Latest simpleopcua Docker image
-        working-directory: ./dataprocess
-        run: docker tag dataprocess:latest joaoribeiro5039/dataprocess:latest
+      - name: Build Latest opctorabbitmq Docker image
+        working-directory: ./opcservers
+        run: docker tag opctorabbitmq:latest joaoribeiro5039/opctorabbitmq:latest
 
-      - name: Docker Push Latest simpleopcua
-        run: docker push joaoribeiro5039/dataprocess:latest
+      - name: Docker Push Latest opctorabbitmq
+        run: docker push joaoribeiro5039/opctorabbitmq:latest
+  
+  publish-rabbitmqtocassandra:
+    needs: publish-opctorabbitmq
+    name: Publish rabbitmqtocassandra to DockerHub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKERHUB_USER}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build the Docker image rabbitmqtocassandra
+        working-directory: ./opcservers
+        run: docker build . --file Dockerfile --tag rabbitmqtocassandra:latest
         
+      - name: Build Latest rabbitmqtocassandra Docker image
+        working-directory: ./opcservers
+        run: docker tag rabbitmqtocassandra:latest joaoribeiro5039/rabbitmqtocassandra:latest
+
+      - name: Docker Push Latest rabbitmqtocassandra
+        run: docker push joaoribeiro5039/rabbitmqtocassandra:latest
+
+
   test-docker-compose-with-dockerhub:
     needs: publish-dataprocess
     name: Test Docker compose with Docker hub components
