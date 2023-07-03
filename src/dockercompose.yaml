@@ -49,6 +49,9 @@ services:
     build:
       context: /dataprocess
       dockerfile: Dockerfile
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - CASSANDRA_DB_HOST=cassandra
     restart: unless-stopped
     depends_on:
       - simpleopcua
