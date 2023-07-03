@@ -5,14 +5,28 @@ from cassandra.cluster import Cluster
 from cassandra.query import SimpleStatement
 import concurrent.futures
 import uuid
+import os
 
 global rabbitmq_queues
 rabbitmq_queues = []
+
+global RabbitMQBroker
+try:
+    RabbitMQBroker = os.getenv("RABBITMQ_BROKER_HOST")
+except:
+    RabbitMQBroker = "rabbitmq"
+    
+global CassandraDB
+try:
+    CassandraDB = os.getenv("CASSANDRA_DB_HOST")
+except:
+    CassandraDB = "cassandra"
+
 for i in range(10):
     for imotor in range(1,6):
         queue = "Server_" + str(i) + "_Motor_" + str(imotor)
         credentials = pika.PlainCredentials('admin', 'admin')
-        connection_params = pika.ConnectionParameters('rabbitmq', credentials=credentials)
+        connection_params = pika.ConnectionParameters(RabbitMQBroker, credentials=credentials)
         connection = pika.BlockingConnection(connection_params)
         rabbitmq_channel = connection.channel()
         obj = {
@@ -21,7 +35,7 @@ for i in range(10):
         }
         rabbitmq_queues.append(obj)
 
-cassandra_host = "cassandra"
+cassandra_host = CassandraDB
 cassandra_keyspace = "simpleiot"
 
 cluster = Cluster([cassandra_host])
