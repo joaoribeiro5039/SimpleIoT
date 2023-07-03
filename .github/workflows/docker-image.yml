@@ -15,9 +15,10 @@ jobs:
           password: ${{secrets.DOCKERHUB_TOKEN}}
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Start docker compose
-        working-directory: ./src/
-        run: docker-compose up -d
+      - name: Docker Compose Action
+        uses: isbang/compose-action@v1.4.1
+        with:
+          compose-file: "./src/docker-compose.yml"
   
   publish-simpleopcua:
     needs: test-docker-compose

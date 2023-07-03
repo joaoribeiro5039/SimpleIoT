@@ -27,7 +27,8 @@ services:
   simpleopcua:
     container_name: simpleopcua
     build:
-      dockerfile: /opcservers/Dockerfile
+      context: ./opcservers
+      dockerfile: Dockerfile
     ports:
       - "4840:4840"
       - "4841:4841"
@@ -46,7 +47,8 @@ services:
   dataprocess:
     container_name: dataprocess
     build:
-      dockerfile: /dataprocess/Dockerfile
+      context: ./dataprocess
+      dockerfile: Dockerfile
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
       - CASSANDRA_DB_HOST=cassandra
