@@ -17,7 +17,7 @@ if RabbitMQBroker is None:
 global RabbitMQ_Queue
 RabbitMQ_Queue = os.getenv("RABBITMQ_BROKER_QUEUE_PREFIX")
 if RabbitMQ_Queue is None:
-    RabbitMQ_Queue = "server1"
+    RabbitMQ_Queue = "servera"
 
 global RabbitMQBroker_user
 RabbitMQBroker_user = os.getenv("RABBITMQ_BROKER_USER")
@@ -40,17 +40,17 @@ TableName = os.getenv("CASSANDRA_DB_TABLENAME")
 if TableName is None:
     TableName = "Server1"
 
+global queue_list
+queue_list= []
 response = requests.get("http://" + RabbitMQBroker + ":15672/api/queues", auth=(RabbitMQBroker_user, RabbitMQBroker_password))
 if response.status_code == 200:
     all_queue_list = [queue['name'] for queue in response.json()]
+    for queu in all_queue_list:
+        if RabbitMQ_Queue in queu:
+            queue_list.append(queu)
 else:
     print('Failed to retrieve queue list from RabbitMQ Management API.')
 
-global queue_list
-queue_list= []
-for queu in RabbitMQ_Queue:
-    if RabbitMQ_Queue in queu:
-        queue_list.append(queu)
 
 
 credentials = pika.PlainCredentials(RabbitMQBroker_user, RabbitMQBroker_password)
