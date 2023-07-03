@@ -18,7 +18,7 @@ jobs:
 
       - name: Build the Docker image simpleopcua
         working-directory: ./src/
-        run: docker compose up
+        run: docker compose up -d
   
   publish-simpleopcua:
     name: Publish simpleopcua to DockerHub
