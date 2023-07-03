@@ -74,6 +74,7 @@ try:
     root_node = opc_client.get_root_node()
     print(root_node)
     while True:
+        time.sleep(0.1)
         browse_nodes(root_node)
 
 finally:
