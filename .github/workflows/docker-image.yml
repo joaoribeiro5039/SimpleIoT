@@ -5,7 +5,7 @@ on: [push]
 jobs:
 
   test-docker-compose:
-    name: Publish simpleopcua to DockerHub
+    name: Test Docker compose up
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build the Docker image simpleopcua
-        working-directory: ./src/
+        working-directory: ./src
         run: docker compose up -d
   
   publish-simpleopcua:
