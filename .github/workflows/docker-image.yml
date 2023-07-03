@@ -34,11 +34,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build the Docker image opcuaserver
-        working-directory: ./opcservers
+        working-directory: ./opcserver
         run: docker build . --file Dockerfile --tag opcuaserver:latest
         
       - name: Build Latest opcuaserver Docker image
-        working-directory: ./opcservers
+        working-directory: ./opcserver
         run: docker tag opcuaserver:latest joaoribeiro5039/opcuaserver:latest
 
       - name: Docker Push Latest opcuaserver
@@ -58,11 +58,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build the Docker image opctorabbitmq
-        working-directory: ./opcservers
+        working-directory: ./opctorabbitmq
         run: docker build . --file Dockerfile --tag opctorabbitmq:latest
         
       - name: Build Latest opctorabbitmq Docker image
-        working-directory: ./opcservers
+        working-directory: ./opctorabbitmq
         run: docker tag opctorabbitmq:latest joaoribeiro5039/opctorabbitmq:latest
 
       - name: Docker Push Latest opctorabbitmq
@@ -82,11 +82,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build the Docker image rabbitmqtocassandra
-        working-directory: ./opcservers
+        working-directory: ./rabbitmqtocassandra
         run: docker build . --file Dockerfile --tag rabbitmqtocassandra:latest
         
       - name: Build Latest rabbitmqtocassandra Docker image
-        working-directory: ./opcservers
+        working-directory: ./rabbitmqtocassandra
         run: docker tag rabbitmqtocassandra:latest joaoribeiro5039/rabbitmqtocassandra:latest
 
       - name: Docker Push Latest rabbitmqtocassandra
