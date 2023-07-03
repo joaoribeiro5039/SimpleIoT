@@ -1,0 +1,116 @@
+version: '3'
+services:
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.9.11-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: always
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - 9042:9042
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+
+  opcuaserver1:
+    container_name: opcuaserver1
+    image: joaoribeiro5039/opcuaserver:latest
+    restart: always
+
+  opcuaserver2:
+    container_name: opcuaserver2
+    image: joaoribeiro5039/opcuaserver:latest
+    restart: always
+
+  opcuaserver3:
+    container_name: opcuaserver3
+    image: joaoribeiro5039/opcuaserver:latest
+    restart: always
+
+  opcuaserver4:
+    container_name: opcuaserver4
+    image: joaoribeiro5039/opcuaserver:latest
+    restart: always
+
+  opcuaserver5:
+    container_name: opcuaserver5
+    image: joaoribeiro5039/opcuaserver:latest
+    restart: always
+
+
+
+  opctorabbitmq1:
+    container_name: opctorabbitmq1
+    image: joaoribeiro5039/opctorabbitmq:latest
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
+      - OPC_UA_HOST=opcuaserver1:4840
+    restart: always
+  opctorabbitmq2:
+    container_name: opctorabbitmq2
+    image: joaoribeiro5039/opctorabbitmq:latest
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server2
+      - OPC_UA_HOST=opcuaserver2:4840
+    restart: always
+  opctorabbitmq3:
+    container_name: opctorabbitmq3
+    image: joaoribeiro5039/opctorabbitmq:latest
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server3
+      - OPC_UA_HOST=opcuaserver3:4840
+    restart: always
+  opctorabbitmq4:
+    container_name: opctorabbitmq4
+    image: joaoribeiro5039/opctorabbitmq:latest
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server4
+      - OPC_UA_HOST=opcuaserver4:4840
+    restart: always
+  opctorabbitmq5:
+    container_name: opctorabbitmq5
+    image: joaoribeiro5039/opctorabbitmq:latest
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server5
+      - OPC_UA_HOST=opcuaserver5:4840
+    restart: always
+
+  rabbitmqtocassandra:
+    container_name: rabbitmqtocassandra
+    image: joaoribeiro5039/rabbitmqtocassandra:latest
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - CASSANDRA_DB_HOST=cassandra
+      - CASSANDRA_DB_TABLENAME=Server1
+    restart: unless-stopped
+      
+volumes:
+  rabbitmq_data:
+  cassandra-data:

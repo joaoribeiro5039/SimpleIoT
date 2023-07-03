@@ -28,7 +28,7 @@ if RabbitMQBroker_password is None:
 
 
 global RabbitMQ_Queue
-RabbitMQ_Queue = os.getenv("RABBITMQ_BROKER_QUEUE")
+RabbitMQ_Queue = os.getenv("RABBITMQ_BROKER_QUEUE_PREFIX")
 if RabbitMQ_Queue is None:
     RabbitMQ_Queue = "server1"
     
@@ -54,7 +54,7 @@ def browse_nodes(node):
                 for childnode in node.get_children():
                     childnodeid = childnode.nodeid
                     value = childnode.get_value()
-                    queue_name = childnodeid.Identifier
+                    queue_name = RabbitMQ_Queue + "." + childnodeid.Identifier
                     print(queue_name)
                     channel.queue_declare(queue=queue_name)
                     channel.basic_publish(exchange='', routing_key=queue_name, body=str(value))

@@ -41,7 +41,7 @@ services:
       - RABBITMQ_BROKER_HOST=rabbitmq
       - RABBITMQ_BROKER_USER=admin
       - RABBITMQ_BROKER_PASSWORD=admin
-      - RABBITMQ_BROKER_QUEUE=server1
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
       - OPC_UA_HOST=opcuaserver:4840
     restart: always
     depends_on:
