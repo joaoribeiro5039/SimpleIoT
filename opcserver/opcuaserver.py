@@ -54,7 +54,6 @@ def UpdateServerValues(starttime):
 try:
     start_time = time.time()
     while True:
-        time.sleep(0.04)
         start_time_Timer = time.time()
         UpdateServerValues(start_time)
         end_time_Timer = time.time()

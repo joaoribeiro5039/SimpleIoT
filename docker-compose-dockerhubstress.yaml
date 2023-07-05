@@ -96,7 +96,7 @@ services:
       - OPC_UA_HOST=opcuaserver3:4840
     restart: always
   opctorabbitmq4:
-    container_name: opctorabbitmq3
+    container_name: opctorabbitmq4
     image: joaoribeiro5039/opctorabbitmq:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
@@ -106,7 +106,7 @@ services:
       - OPC_UA_HOST=opcuaserver4:4840
     restart: always
   opctorabbitmq5:
-    container_name: opctorabbitmq3
+    container_name: opctorabbitmq5
     image: joaoribeiro5039/opctorabbitmq:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
@@ -116,7 +116,7 @@ services:
       - OPC_UA_HOST=opcuaserver5:4840
     restart: always
   opctorabbitmq6:
-    container_name: opctorabbitmq3
+    container_name: opctorabbitmq6
     image: joaoribeiro5039/opctorabbitmq:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
@@ -126,7 +126,7 @@ services:
       - OPC_UA_HOST=opcuaserver6:4840
     restart: always
   opctorabbitmq7:
-    container_name: opctorabbitmq3
+    container_name: opctorabbitmq7
     image: joaoribeiro5039/opctorabbitmq:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
@@ -136,7 +136,7 @@ services:
       - OPC_UA_HOST=opcuaserver7:4840
     restart: always
   opctorabbitmq8:
-    container_name: opctorabbitmq3
+    container_name: opctorabbitmq8
     image: joaoribeiro5039/opctorabbitmq:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
@@ -146,7 +146,7 @@ services:
       - OPC_UA_HOST=opcuaserver8:4840
     restart: always
   opctorabbitmq9:
-    container_name: opctorabbitmq3
+    container_name: opctorabbitmq9
     image: joaoribeiro5039/opctorabbitmq:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
@@ -156,7 +156,7 @@ services:
       - OPC_UA_HOST=opcuaserver9:4840
     restart: always
   opctorabbitmq10:
-    container_name: opctorabbitmq3
+    container_name: opctorabbitmq10
     image: joaoribeiro5039/opctorabbitmq:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
