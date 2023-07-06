@@ -53,7 +53,6 @@ def browse_nodes(node):
                     childnodeid = childnode.nodeid
                     value = childnode.get_value()
                     queue_name = RabbitMQ_Queue + "." + childnodeid.Identifier
-                    print(queue_name)
                     obj = {
                         'value':str(value),
                         'opc_read_time': str(datetime.datetime.now())
@@ -77,7 +76,10 @@ try:
     root_node = opc_client.get_root_node()
     print(root_node)
     while True:
+        start_time_Timer = time.time()
         browse_nodes(root_node)
+        end_time_Timer = time.time()
+        print(end_time_Timer - start_time_Timer)
 
 finally:
     # Disconnect from the OPC UA server

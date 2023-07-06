@@ -2,6 +2,7 @@ from opcua import ua, Server
 import time
 import random
 import datetime
+import threading
 import json
 import numpy as np
 
@@ -45,6 +46,7 @@ def UpdateServerValues(starttime):
     end_time = time.time()
     timeElapsed = round(end_time - starttime,6)
     dt_time = datetime.datetime.now()
+    random_new_value = round(random.uniform(0.01, 10000.0),3)
     for i in range(1,6):
         temperature = get_Temperature_value(timeElapsed,5.0 + i*10.0)
         speed = get_Speed_value(timeElapsed,200.0 + i*100.0)

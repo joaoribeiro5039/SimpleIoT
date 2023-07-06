@@ -61,6 +61,16 @@ services:
     depends_on:
       - opctorabbitmq
       
+  opctokafka:
+    container_name: opctokafka
+    image: joaoribeiro5039/opctokafka:latest
+    environment:
+      - KAFKA_BROKER_HOST=kafka:29092
+      - KAFKA_PRODUCER_ID=my_producer
+      - KAFKA_PRODUCER_PREFIX=Server1
+      - OPC_UA_HOST=opcuaserver:4840
+    restart: always
+      
 volumes:
   rabbitmq_data:
   cassandra-data:

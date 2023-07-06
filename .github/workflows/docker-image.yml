@@ -92,9 +92,33 @@ jobs:
       - name: Docker Push Latest rabbitmqtocassandra
         run: docker push joaoribeiro5039/rabbitmqtocassandra:latest
 
+  publish-opctokafka:
+    needs: publish-rabbitmqtocassandra
+    name: Publish opctokafka to DockerHub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKERHUB_USER}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build the Docker image opctokafka
+        working-directory: ./opctokafka
+        run: docker build . --file Dockerfile --tag opctokafka:latest
+        
+      - name: Build Latest opctokafka Docker image
+        working-directory: ./opctokafka
+        run: docker tag opctokafka:latest joaoribeiro5039/opctokafka:latest
+
+      - name: Docker Push Latest opctokafka
+        run: docker push joaoribeiro5039/opctokafka:latest
+
 
   test-docker-compose-with-dockerhub:
-    needs: publish-rabbitmqtocassandra
+    needs: publish-opctokafka
     name: Test Docker compose with Docker hub components
     runs-on: ubuntu-latest
     steps:
