@@ -70,14 +70,18 @@ services:
       - cassandra
 
 
-  opctorabbitmq:
-    container_name: opctorabbitmq
-    image: joaoribeiro5039/opctorabbitmq:latest
+  opctobroker:
+    container_name: opctobroker
+    image: joaoribeiro5039/opctobroker:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
       - RABBITMQ_BROKER_USER=admin
       - RABBITMQ_BROKER_PASSWORD=admin
       - RABBITMQ_BROKER_QUEUE_PREFIX=server1
+      - OPC_UA_HOST=opcuaserver:4840
+      - KAFKA_BROKER_HOST=kafka:29092
+      - KAFKA_PRODUCER_ID=my_producer
+      - KAFKA_PRODUCER_PREFIX=Server1
       - OPC_UA_HOST=opcuaserver:4840
     restart: always
     depends_on:
@@ -96,17 +100,6 @@ services:
     restart: unless-stopped
     depends_on:
       - opctorabbitmq
-      
-  opctokafka:
-    container_name: opctokafka
-    image: joaoribeiro5039/opctokafka:latest
-    environment:
-      - KAFKA_BROKER_HOST=kafka:29092
-      - KAFKA_PRODUCER_ID=my_producer
-      - KAFKA_PRODUCER_PREFIX=Server1
-      - OPC_UA_HOST=opcuaserver:4840
-    restart: always
-      
 volumes:
   rabbitmq_data:
   cassandra-data:

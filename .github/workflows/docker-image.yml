@@ -44,9 +44,9 @@ jobs:
       - name: Docker Push Latest opcuaserver
         run: docker push joaoribeiro5039/opcuaserver:latest
   
-  publish-opctorabbitmq:
+  publish-opctobroker:
     needs: publish-opcuaserver
-    name: Publish opctorabbitmq to DockerHub
+    name: Publish opctobroker to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -57,19 +57,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build the Docker image opctorabbitmq
-        working-directory: ./opctorabbitmq
-        run: docker build . --file Dockerfile --tag opctorabbitmq:latest
+      - name: Build the Docker image opctobroker
+        working-directory: ./opctobroker
+        run: docker build . --file Dockerfile --tag opctobroker:latest
         
-      - name: Build Latest opctorabbitmq Docker image
-        working-directory: ./opctorabbitmq
-        run: docker tag opctorabbitmq:latest joaoribeiro5039/opctorabbitmq:latest
+      - name: Build Latest opctobroker Docker image
+        working-directory: ./opctobroker
+        run: docker tag opctobroker:latest joaoribeiro5039/opctobroker:latest
 
-      - name: Docker Push Latest opctorabbitmq
-        run: docker push joaoribeiro5039/opctorabbitmq:latest
+      - name: Docker Push Latest opctobroker
+        run: docker push joaoribeiro5039/opctobroker:latest
   
   publish-rabbitmqtocassandra:
-    needs: publish-opctorabbitmq
+    needs: publish-opctobroker
     name: Publish rabbitmqtocassandra to DockerHub
     runs-on: ubuntu-latest
     steps:
@@ -92,33 +92,8 @@ jobs:
       - name: Docker Push Latest rabbitmqtocassandra
         run: docker push joaoribeiro5039/rabbitmqtocassandra:latest
 
-  publish-opctokafka:
-    needs: publish-rabbitmqtocassandra
-    name: Publish opctokafka to DockerHub
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{secrets.DOCKERHUB_USER}}
-          password: ${{secrets.DOCKERHUB_TOKEN}}
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Build the Docker image opctokafka
-        working-directory: ./opctokafka
-        run: docker build . --file Dockerfile --tag opctokafka:latest
-        
-      - name: Build Latest opctokafka Docker image
-        working-directory: ./opctokafka
-        run: docker tag opctokafka:latest joaoribeiro5039/opctokafka:latest
-
-      - name: Docker Push Latest opctokafka
-        run: docker push joaoribeiro5039/opctokafka:latest
-
-
   test-docker-compose-with-dockerhub:
-    needs: publish-opctokafka
+    needs: publish-rabbitmqtocassandra
     name: Test Docker compose with Docker hub components
     runs-on: ubuntu-latest
     steps:

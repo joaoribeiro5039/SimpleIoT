@@ -70,10 +70,10 @@ services:
       - "4840:4840"
     restart: always
 
-  opctorabbitmq:
-    container_name: opctorabbitmq
+  opctobroker:
+    container_name: opctobroker
     build:
-      context: ./opctorabbitmq
+      context: ./opctobroker
       dockerfile: Dockerfile
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
@@ -81,6 +81,9 @@ services:
       - RABBITMQ_BROKER_PASSWORD=admin
       - RABBITMQ_BROKER_QUEUE_PREFIX=server1
       - OPC_UA_HOST=opcuaserver:4840
+      - KAFKA_BROKER_HOST=kafka:29092
+      - KAFKA_PRODUCER_ID=my_producer
+      - KAFKA_PRODUCER_PREFIX=Server1
     restart: always
     depends_on:
       - rabbitmq
@@ -100,18 +103,6 @@ services:
     restart: unless-stopped
     depends_on:
       - opctorabbitmq
-
-  opctokafka:
-    container_name: opctokafka
-    build:
-      context: ./opctokafka
-      dockerfile: Dockerfile
-    environment:
-      - KAFKA_BROKER_HOST=kafka:29092
-      - KAFKA_PRODUCER_ID=my_producer
-      - KAFKA_PRODUCER_PREFIX=Server1
-      - OPC_UA_HOST=opcuaserver:4840
-    restart: always
 
 volumes:
   rabbitmq-data:
