@@ -102,7 +102,7 @@ services:
       - CASSANDRA_DB_TABLENAME=Server1
     restart: unless-stopped
     depends_on:
-      - opctorabbitmq
+      - opctobroker
 
 volumes:
   rabbitmq-data:
