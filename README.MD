@@ -55,4 +55,4 @@ Please note that the `latest` tag used in the image names assumes that the lates
 Ensure that you have the necessary environment variables set appropriately and run the containers using the provided configuration.
 
 
- [TestRun](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/doc/testrun.mkv)
+ [TestRun](https://youtu.be/3exYziLz77w)
