@@ -1,4 +1,4 @@
-![alt text](https://github.com/joaoribeiro5039/SimpleIoT/doc/diagram.png?raw=true)
+![alt text](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/doc/diagram.png?raw=true)
 
 ## Service Documentation
 
