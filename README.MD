@@ -1,165 +1,54 @@
 ![alt text](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/doc/diagram.png?raw=true)
+# Container Descriptions
 
-## Service Documentation
+This document provides an overview of the containers used in the project. Each container serves a specific purpose and contributes to the overall functionality of the system.
 
-This documentation provides information on the different services defined in the provided `docker-compose.yml` file.
+## opctobroker
 
-### rabbitmq
-- Image: rabbitmq:3.9.11-management
-- Ports:
-  - 5672:5672 (AMQP port)
-  - 15672:15672 (Management UI port)
-- Environment variables:
-  - RABBITMQ_DEFAULT_USER=admin
-  - RABBITMQ_DEFAULT_PASS=admin
-- Volumes:
-  - rabbitmq_data:/var/lib/rabbitmq
-- Restart: always
-- Dependencies: opcuaserver
+- **Container Name**: opctobroker
+- **Image**: joaoribeiro5039/opctobroker:latest
 
-This service sets up a RabbitMQ message broker with RabbitMQ Management UI. It exposes ports for AMQP (5672) and the management UI (15672). It uses the `admin` username and password for authentication. The data directory of RabbitMQ is mounted to a volume named `rabbitmq_data`. The service will restart automatically and depends on the `opcuaserver` service.
+# My Project
+is really really cool. My Project has a subdir named myLib, see below.
 
-### cassandra
-- Image: cassandra:latest
-- Ports:
-  - 9042:9042 (Cassandra native transport port)
-- Volumes:
-  - cassandra-data:/var/lib/cassandra
+## myLib documentation
+see documentation [here](opctobroker/README.md)
 
-This service sets up a Cassandra database server. It exposes the Cassandra native transport port (9042). The data directory of Cassandra is mounted to a volume named `cassandra-data`.
+The `opctobroker` container acts as a bridge between the OPC-UA server and multiple message brokers, including RabbitMQ, Kafka, and MQTT. It facilitates the exchange of data between the OPC-UA server and these brokers. The container is responsible for reading OPC-UA values, formatting them as JSON, and publishing them to the respective message brokers. It requires the following environment variables to be set:
 
-### opcuaserver
-- Image: joaoribeiro5039/opcuaserver:latest
-- Ports:
-  - 4840:4840
+- `RABBITMQ_BROKER_HOST`: Hostname or IP address of the RabbitMQ broker.
+- `RABBITMQ_BROKER_USER`: Username for RabbitMQ authentication.
+- `RABBITMQ_BROKER_PASSWORD`: Password for RabbitMQ authentication.
+- `RABBITMQ_BROKER_QUEUE_PREFIX`: Prefix for RabbitMQ queues.
+- `OPC_UA_HOST`: Hostname or IP address of the OPC-UA server.
+- `KAFKA_BROKER_HOST`: Hostname or IP address of the Kafka broker.
+- `KAFKA_PRODUCER_ID`: ID for the Kafka producer.
+- `KAFKA_PRODUCER_PREFIX`: Prefix for Kafka topics.
+- `MQTT_BROKER_HOST`: Hostname or IP address of the MQTT broker.
+- `MQTT_BROKER_PORT`: Port number of the MQTT broker.
+- `MQTT_BROKER_PREFIX`: Prefix for MQTT topics.
 
-This service sets up an OPC UA server. It exposes port 4840 for OPC UA communication.
+## rabbitmqtocassandra
 
-### opctorabbitmq
-- Image: joaoribeiro5039/opctorabbitmq:latest
-- Environment variables:
-  - RABBITMQ_BROKER_HOST=rabbitmq
-  - RABBITMQ_BROKER_USER=admin
-  - RABBITMQ_BROKER_PASSWORD=admin
-  - RABBITMQ_BROKER_QUEUE=server1
-  - OPC_UA_HOST=opcuaserver:4840
-- Restart: always
-- Dependencies: rabbitmq
+- **Container Name**: rabbitmqtocassandra
+- **Image**: joaoribeiro5039/rabbitmqtocassandra:latest
 
-This service connects to the RabbitMQ broker (`rabbitmq`) and OPC UA server (`opcuaserver`). It communicates with RabbitMQ using the provided host, username, password, and queue name. It also specifies the OPC UA server host.
+The `rabbitmqtocassandra` container consumes messages from RabbitMQ and stores them in an Apache Cassandra database. It subscribes to RabbitMQ queues with the configured prefix, retrieves the messages, and saves them in Cassandra. The container requires the following environment variables:
 
-# OPC UA to RabbitMQ Data Publisher
+- `RABBITMQ_BROKER_HOST`: Hostname or IP address of the RabbitMQ broker.
+- `RABBITMQ_BROKER_USER`: Username for RabbitMQ authentication.
+- `RABBITMQ_BROKER_QUEUE_PREFIX`: Prefix for RabbitMQ queues.
+- `RABBITMQ_BROKER_PASSWORD`: Password for RabbitMQ authentication.
+- `CASSANDRA_DB_HOST`: Hostname or IP address of the Cassandra database.
+- `CASSANDRA_DB_TABLENAME`: Name of the Cassandra table where the messages will be stored.
 
-The OPC UA to RabbitMQ Data Publisher is a Python script that reads data from an OPC UA server and publishes it to RabbitMQ queues. It uses the `opcua` library for OPC UA communication and the `pika` library for RabbitMQ integration.
+## opcwriter
 
-## Dependencies
+- **Container Name**: opcwriter
+- **Image**: joaoribeiro5039/opcwriter:latest
 
-- `opcua`: A Python library for interacting with OPC UA servers.
-- `pika`: A Python library for interacting with RabbitMQ message broker.
+The `opcwriter` container provides an HTTP API for accessing OPC-UA data. It exposes port 8000, allowing clients to retrieve and modify OPC-UA values using standard HTTP requests. This container serves as an interface for interacting with the OPC-UA server. No additional environment variables are required.
 
-Make sure to install these dependencies using `pip` before running the script.
+Please note that the `latest` tag used in the image names assumes that the latest version of each container is being used. It's recommended to use specific version tags for production deployments to ensure stability and compatibility.
 
-## Environment Variables
-
-The script utilizes the following environment variables:
-
-- `RABBITMQ_BROKER_HOST`: Hostname or IP address of the RabbitMQ broker. Defaults to "rabbitmq" if not provided.
-- `RABBITMQ_BROKER_USER`: Username for RabbitMQ authentication. Defaults to "admin" if not provided.
-- `RABBITMQ_BROKER_PASSWORD`: Password for RabbitMQ authentication. Defaults to "admin" if not provided.
-- `RABBITMQ_BROKER_QUEUE`: Name of the RabbitMQ queue to publish the data. Defaults to "server1" if not provided.
-- `OPC_UA_HOST`: Hostname or IP address of the OPC UA server with the port. Defaults to "opcuaserver:4840" if not provided.
-
-Ensure that you have set these environment variables with the appropriate values before running the script.
-
-## Code Overview
-
-The script performs the following steps:
-
-1. Imports the required libraries and sets up variables based on the provided environment variables.
-2. Connects to the OPC UA server using the provided host.
-3. Establishes a connection to RabbitMQ using the provided credentials.
-4. Defines the `browse_nodes` function to browse the OPC UA server's nodes and publish the data to the corresponding RabbitMQ queue.
-5. Calls the `browse_nodes` function to start publishing data.
-6. Disconnects from the OPC UA server and closes the RabbitMQ connection when the script is terminated.
-
-## Running the Script
-
-To run the OPC UA to RabbitMQ Data Publisher:
-
-1. Make sure that the OPC UA server and RabbitMQ services are running and accessible using the provided hostnames or IP addresses and ports.
-2. Ensure that the required dependencies are installed.
-3. Set the appropriate environment variables with the desired values.
-4. Execute the script using a Python interpreter or by running the script file.
-
-Note: Customize the code according to your specific requirements, such as modifying the OPC UA server connection details, browsing specific nodes, or publishing data to different RabbitMQ queues.
-
-
-
-
-### rabbitmqtocassandra
-- Image: joaoribeiro5039/rabbitmqtocassandra:latest
-- Environment variables:
-  - RABBITMQ_BROKER_HOST=rabbitmq
-  - RABBITMQ_BROKER_USER=admin
-  - RABBITMQ_BROKER_PASSWORD=admin
-  - CASSANDRA_DB_HOST=cassandra
-  - CASSANDRA_DB_TABLENAME=Server1
-- Restart: unless-stopped
-- Dependencies: opctorabbitmq
-
-This service connects to the RabbitMQ broker (`rabbitmq`) and Cassandra database (`cassandra`). It communicates with RabbitMQ using the provided host, username, and password. It also specifies the Cassandra host and the table name to use.
-
-# RabbitMQ to Cassandra Data Processor
-
-The RabbitMQ to Cassandra Data Processor is a Python script that consumes messages from RabbitMQ queues and inserts them into a Cassandra database. It uses the `pika` library for RabbitMQ communication and the `cassandra-driver` for Cassandra integration.
-
-## Dependencies
-
-- `pika`: A Python library for interacting with RabbitMQ message broker.
-- `cassandra-driver`: A Python driver for interacting with Cassandra database.
-
-Make sure to install these dependencies using `pip` before running the script.
-
-## Environment Variables
-
-The script utilizes the following environment variables:
-
-- `RABBITMQ_BROKER_HOST`: Hostname or IP address of the RabbitMQ broker. Defaults to "rabbitmq" if not provided.
-- `RABBITMQ_BROKER_USER`: Username for RabbitMQ authentication. Defaults to "admin" if not provided.
-- `RABBITMQ_BROKER_PASSWORD`: Password for RabbitMQ authentication. Defaults to "admin" if not provided.
-- `CASSANDRA_DB_HOST`: Hostname or IP address of the Cassandra database. Defaults to "cassandra" if not provided.
-- `CASSANDRA_DB_TABLENAME`: Name of the Cassandra table to store the data. Defaults to "Server1" if not provided.
-
-Ensure that you have set these environment variables with the appropriate values before running the script.
-
-## Code Overview
-
-The script performs the following steps:
-
-1. Imports the required libraries and sets up variables based on the provided environment variables.
-2. Retrieves the list of existing queues from the RabbitMQ Management API using the provided credentials.
-3. Establishes a connection to RabbitMQ using the provided credentials.
-4. Connects to the Cassandra database and creates a keyspace if it doesn't exist already. Then, creates a table with the specified table name if it doesn't exist.
-5. Defines the `process_message` function to handle incoming messages from RabbitMQ and inserts them into the Cassandra table.
-6. Sets up a consumer for each queue in the `queue_list` using the `basic_consume` method, passing the `process_message` function as the callback.
-7. Starts consuming messages from RabbitMQ by calling `start_consuming` on the channel.
-8. Shuts down the Cassandra session, cluster, and RabbitMQ connection when the script is terminated.
-
-## Running the Script
-
-To run the RabbitMQ to Cassandra Data Processor:
-
-1. Make sure that RabbitMQ and Cassandra services are running and accessible using the provided hostnames or IP addresses and ports.
-2. Ensure that the required dependencies are installed.
-3. Set the appropriate environment variables with the desired values.
-4. Execute the script using a Python interpreter or by running the script file.
-
-Note: Customize the code according to your specific requirements, such as modifying the table schema or adding error handling logic.
-
-### Volumes
-- rabbitmq_data: Used to persist RabbitMQ data.
-- cassandra-data: Used to persist Cassandra data.
-
-These volumes are created to store the data generated by RabbitMQ and Cassandra services respectively.
-
-Please note that this documentation provides an overview of the services and their configurations defined in the provided `docker-compose.yml`. Additional details about each service and its functionality should be available in the respective Docker images or application documentation.
+Ensure that you have the necessary environment variables set appropriately and run the containers using the provided configuration.

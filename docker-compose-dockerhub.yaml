@@ -1,6 +1,42 @@
 version: '3'
 services:
 
+  opctobroker:
+    container_name: opctobroker
+    image: joaoribeiro5039/opctobroker:latest
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq #RabbitMQ 
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
+      - OPC_UA_HOST=opcuaserver:4840 #OPC UA 
+      - KAFKA_BROKER_HOST=kafka:9092 #Kafka
+      - KAFKA_PRODUCER_ID=my_producer
+      - KAFKA_PRODUCER_PREFIX=server1
+      - MQTT_BROKER_HOST=mqtt #Mqtt
+      - MQTT_BROKER_PORT=1883 
+      - MQTT_BROKER_PREFIX=server1
+    restart: always
+
+  rabbitmqtocassandra:
+    container_name: rabbitmqtocassandra
+    image: joaoribeiro5039/rabbitmqtocassandra:latest
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - CASSANDRA_DB_HOST=cassandra
+      - CASSANDRA_DB_TABLENAME=Server1
+    restart: unless-stopped
+
+  opcwriter:
+    container_name: opcwriter
+    image: joaoribeiro5039/opcwriter:latest
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.0
     container_name: zookeeper
@@ -74,42 +110,6 @@ services:
     ports:
       - "4840:4840"
     restart: always
-
-  opctobroker:
-    container_name: opctobroker
-    image: joaoribeiro5039/opctobroker:latest
-    environment:
-      - RABBITMQ_BROKER_HOST=rabbitmq #RabbitMQ 
-      - RABBITMQ_BROKER_USER=admin
-      - RABBITMQ_BROKER_PASSWORD=admin
-      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
-      - OPC_UA_HOST=opcuaserver:4840 #OPC UA 
-      - KAFKA_BROKER_HOST=kafka:9092 #Kafka
-      - KAFKA_PRODUCER_ID=my_producer
-      - KAFKA_PRODUCER_PREFIX=server1
-      - MQTT_BROKER_HOST=mqtt #Mqtt
-      - MQTT_BROKER_PORT=1883 
-      - MQTT_BROKER_PREFIX=server1
-    restart: always
-
-  rabbitmqtocassandra:
-    container_name: rabbitmqtocassandra
-    image: joaoribeiro5039/rabbitmqtocassandra:latest
-    environment:
-      - RABBITMQ_BROKER_HOST=rabbitmq
-      - RABBITMQ_BROKER_USER=admin
-      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
-      - RABBITMQ_BROKER_PASSWORD=admin
-      - CASSANDRA_DB_HOST=cassandra
-      - CASSANDRA_DB_TABLENAME=Server1
-    restart: unless-stopped
-
-  opcwriter:
-    container_name: opcwriter
-    image: joaoribeiro5039/opcwriter:latest
-    restart: unless-stopped
-    ports:
-      - 8000:8000
 
 volumes:
   rabbitmq-data:
