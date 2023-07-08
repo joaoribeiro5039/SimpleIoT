@@ -1,3 +1,5 @@
+[main documentation](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/README.MD)
+
 # Program Explanation
 
 This program is designed to consume messages from RabbitMQ queues and store them in an Apache Cassandra database. It establishes a connection to RabbitMQ and retrieves the list of queues based on the specified prefix. The program then sets up a connection to the Cassandra database.

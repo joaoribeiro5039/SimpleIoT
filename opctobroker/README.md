@@ -1,3 +1,5 @@
+[main documentation](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/README.MD)
+
 # OPC-UA Data Publisher
 
 This project implements an OPC-UA data publisher that reads values from an OPC-UA server and publishes them to various message brokers such as RabbitMQ, Apache Kafka, and MQTT. The values are published in JSON format, including the OPC-UA node ID, value, and timestamp.

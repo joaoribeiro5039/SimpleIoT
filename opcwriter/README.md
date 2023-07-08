@@ -1,3 +1,5 @@
+[main documentation](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/README.MD)
+
 # OPC-UA FastAPI Server
 
 This project implements a FastAPI server for interacting with an OPC-UA server. It provides endpoints to read OPC-UA values, write OPC-UA values, and read filtered OPC-UA values based on a specific node ID.
