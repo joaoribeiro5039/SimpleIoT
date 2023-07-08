@@ -1,3 +1,5 @@
+![alt text](https://github.com/joaoribeiro5039/SimpleIoT/doc/diagram.png?raw=true)
+
 ## Service Documentation
 
 This documentation provides information on the different services defined in the provided `docker-compose.yml` file.
