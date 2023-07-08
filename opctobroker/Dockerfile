@@ -14,5 +14,7 @@ RUN pip install confluent-kafka
 
 EXPOSE 4840
 EXPOSE 5672
+EXPOSE 29092
+EXPOSE 9092
 
 CMD ["python","opctobroker.py"]

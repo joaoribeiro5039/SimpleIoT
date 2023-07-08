@@ -79,7 +79,7 @@ services:
       - RABBITMQ_BROKER_PASSWORD=admin
       - RABBITMQ_BROKER_QUEUE_PREFIX=server1
       - OPC_UA_HOST=opcuaserver:4840
-      - KAFKA_BROKER_HOST=kafka:29092
+      - KAFKA_BROKER_HOST=kafka:9092
       - KAFKA_PRODUCER_ID=my_producer
       - KAFKA_PRODUCER_PREFIX=Server1
       - OPC_UA_HOST=opcuaserver:4840

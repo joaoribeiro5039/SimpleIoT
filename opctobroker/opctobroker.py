@@ -44,7 +44,7 @@ else:
 
 #region Read Kafka Env Variables
 global usingKafka
-usingKafka = False
+usingKafka =False
 global KafkaBroker
 KafkaBroker = os.getenv("KAFKA_BROKER_HOST")
 if KafkaBroker is None:
@@ -62,7 +62,7 @@ else:
 global KafkaProducerPref
 KafkaProducerPref = os.getenv("KAFKA_PRODUCER_PREFIX")
 if KafkaProducerPref is None:
-    KafkaProducerPref = "Server1"
+    KafkaProducerPref = "server1"
 else:
     usingKafka = True
 #endregion
@@ -72,9 +72,6 @@ global OPC_Host
 OPC_Host = os.getenv("OPC_UA_HOST")
 if OPC_Host is None:
     OPC_Host = "localhost:4840"
-
-global opc_client
-opc_client = Client( "opc.tcp://" + OPC_Host)
 
 def browse_nodes_RabbitMQ(node):
     childrens = node.get_children()
@@ -112,28 +109,27 @@ def browse_nodes_Kafka(node):
                     topic = KafkaProducerPref + "." + childnodeid.Identifier
                     producer.produce(topic=topic, value=obj_json)
 
-
-try:
-    # Connect to the OPC UA server
-    opc_client.connect()
-    if usingRabbit:
+if usingRabbit:
         credentials = pika.PlainCredentials(RabbitMQBroker_user, RabbitMQBroker_password)
         connection_params = pika.ConnectionParameters(RabbitMQBroker, credentials=credentials)
         connection = pika.BlockingConnection(connection_params)
         channel = connection.channel()
 
-    if usingKafka:
-        bootstrap_servers = KafkaBroker
-        producer_config = {
-            'bootstrap.servers': bootstrap_servers,
-            'client.id': 'my_producer',
-            'acks': 'all'
-            }
-    
-        producer = Producer(producer_config)
-    
+if usingKafka:
+    bootstrap_servers = KafkaBroker
+    producer_config = {
+        'bootstrap.servers': bootstrap_servers,
+        'client.id': 'my_producer',
+        'acks': 'all'
+        }
 
+    producer = Producer(producer_config)
 
+try:
+    # Connect to the OPC UA server
+    opc_client = Client( "opc.tcp://" + OPC_Host)
+    opc_client.connect()
+    
     root = opc_client.get_root_node()
     objects = root.get_children()
     root_node = opc_client.get_root_node()
@@ -153,4 +149,10 @@ try:
 finally:
     # Disconnect from the OPC UA server
     opc_client.disconnect()
-    connection.close()
+    
+    if usingRabbit:
+        connection.close()
+
+    if usingKafka:
+        producer.flush()
+        producer.close()
