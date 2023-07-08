@@ -1,17 +1,18 @@
 FROM python:3.11-slim
 
-RUN mkdir /opctorabbitmq
+RUN mkdir /opctobroker
 
-WORKDIR /usr/src/opctorabbitmq
+WORKDIR /usr/src/opctobroker
 
-COPY opctorabbitmq.py .
+COPY opctobroker.py .
 
 RUN pip install --upgrade pip
 RUN pip install numpy
 RUN pip install opcua
 RUN pip install pika
+RUN pip install confluent-kafka
 
 EXPOSE 4840
 EXPOSE 5672
 
-CMD ["python","opctorabbitmq.py"]
+CMD ["python","opctobroker.py"]
