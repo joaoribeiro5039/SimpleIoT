@@ -53,3 +53,6 @@ The `opcwriter` container provides an HTTP API for accessing OPC-UA data. It exp
 Please note that the `latest` tag used in the image names assumes that the latest version of each container is being used. It's recommended to use specific version tags for production deployments to ensure stability and compatibility.
 
 Ensure that you have the necessary environment variables set appropriately and run the containers using the provided configuration.
+
+
+ [TestRun](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/doc/testrun.mkv)
