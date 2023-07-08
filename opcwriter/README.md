@@ -1,101 +1,52 @@
 [main documentation](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/README.MD)
+# Program Explanation
 
-# OPC-UA FastAPI Server
+This program is an API built with FastAPI that interacts with an OPC UA server. It provides endpoints for reading and writing OPC UA values, as well as retrieving filtered values from the OPC UA server.
 
-This project implements a FastAPI server for interacting with an OPC-UA server. It provides endpoints to read OPC-UA values, write OPC-UA values, and read filtered OPC-UA values based on a specific node ID.
+## OPC UA Connection Setup
 
-## Installation
+The program defines two functions for interacting with the OPC UA server:
 
-To run the OPC-UA FastAPI server, follow these steps:
+1. `ReadAllOPCUAValues`: This function connects to the OPC UA server specified by the `opcUrl` parameter and retrieves all the values from the server. It supports optional parameters for authentication (`UserName` and `Password`) and security policy (`Secure_Policy`).
 
-1. Clone the repository to your local machine.
-2. Install the required dependencies by running the following command:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Run the FastAPI server with the following command:
-   ```
-   uvicorn main:app --reload
-   ```
+2. `WriteOPCUAValue`: This function connects to the OPC UA server specified by the `opcUrl` parameter and writes the `value` to the OPC UA node identified by the `nodeid` parameter. Similar to `ReadAllOPCUAValues`, it also supports optional authentication and security policy parameters.
 
-The server will start running at `http://localhost:8000`.
+The OPC UA server connection is established using the `opcua.Client` class from the `opcua` library. The connection is made to the OPC UA server at the provided `opcUrl`. If authentication and security policy parameters are provided, they are used to configure the security settings of the connection.
 
-## Endpoints
+## API Endpoints
 
-### 1. Testing Endpoint
+The FastAPI application is created using the `FastAPI` class and stored in the `app` variable.
 
-- URL: `/Testing`
-- Method: GET
+### Testing Endpoint
 
-This endpoint is used for testing purposes and returns a simple "Hello World" message.
+The `/Testing` endpoint is a GET request handler that returns a JSON response with a "message" key set to "Hello World". It serves as a simple test endpoint to verify the API's functionality.
 
-### 2. Read All OPC-UA Values Endpoint
+### Reading OPC UA Values
 
-- URL: `/ReadAllOPCValues`
-- Method: GET
+The `/ReadAllOPCValues` endpoint is a GET request handler that accepts the `opcUrl`, `UserName`, `Password`, and `Secure_Policy` parameters. It calls the `ReadAllOPCUAValues` function, passing the provided parameters, and returns the retrieved OPC UA values as a JSON response.
 
-This endpoint retrieves all the values from the OPC-UA server specified by the `opcUrl` parameter. It returns a JSON object with the node IDs as keys and their corresponding values.
+### Writing OPC UA Value
 
-Parameters:
+The `/WriteOPCUAValue` endpoint is a PUT request handler that accepts the `opcUrl`, `nodeid`, `value`, `UserName`, `Password`, and `Secure_Policy` parameters. It calls the `WriteOPCUAValue` function, passing the provided parameters, to write the specified `value` to the OPC UA node identified by the `nodeid`. It returns a JSON response indicating the success of the write operation.
 
-- `opcUrl` (string): The URL of the OPC-UA server.
+### Reading Filtered OPC UA Values
 
-### 3. Write OPC-UA Value Endpoint
+The `/ReadFilteredOPCUAValues` endpoint is a GET request handler that accepts the `opcUrl`, `nodeid`, `UserName`, `Password`, and `Secure_Policy` parameters. It calls the `ReadAllOPCUAValues` function, passing the provided parameters, to retrieve all OPC UA values from the server. It then filters the values based on the `nodeid` and returns the filtered values as a JSON response.
 
-- URL: `/WriteOPCUAValue`
-- Method: PUT
+### Shutdown Event
 
-This endpoint writes a value to the OPC-UA server for the specified node ID. It updates the value of the node with the given `nodeid` parameter to the provided `value`.
+The `@app.on_event("shutdown")` decorator is used to define a function that is executed when the application is shutting down. In this case, the function simply prints a "Shutting down..." message.
 
-Parameters:
+## Usage
 
-- `opcUrl` (string): The URL of the OPC-UA server.
-- `nodeid` (string): The node ID of the OPC-UA server to write the value to.
-- `value` (string): The value to write to the OPC-UA server.
+To use this API, you can send HTTP requests to the specified endpoints:
 
-### 4. Read Filtered OPC-UA Values Endpoint
+- `/Testing`: Send a GET request to test the API functionality. It returns a JSON response with a "message" key set to "Hello World".
 
-- URL: `/ReadFilteredOPCUAValues`
-- Method: GET
+- `/ReadAllOPCValues`: Send a GET request with the appropriate parameters (`opcUrl`, `UserName`, `Password`, and `Secure_Policy`) to retrieve all OPC UA values from the server.
 
-This endpoint retrieves filtered values from the OPC-UA server based on a specific node ID. It returns a JSON object with the node IDs as keys and their corresponding values, filtered based on the `nodeid` parameter.
+- `/WriteOPCUAValue`: Send a PUT request with the appropriate parameters (`opcUrl`, `nodeid`, `value`, `UserName`, `Password`, and `Secure_Policy`) to write a value to an OPC UA node.
 
-Parameters:
+- `/ReadFilteredOPCUAValues`: Send a GET request with the appropriate parameters (`opcUrl`, `nodeid`, `UserName`, `Password`, and `Secure_Policy`) to retrieve filtered OPC UA values from the server based on the specified `nodeid`.
 
-- `opcUrl` (string): The URL of the OPC-UA server.
-- `nodeid` (string): The node ID used to filter the values.
-
-## Example Usage
-
-To read all OPC-UA values from a server:
-
-```
-GET /ReadAllOPCValues?opcUrl=<OPC-UA server URL>
-```
-
-To write a value to an OPC-UA server:
-
-```
-PUT /WriteOPCUAValue
-Content-Type: application/json
-
-{
-    "opcUrl": "<OPC-UA server URL>",
-    "nodeid": "<Node ID>",
-    "value": "<Value>"
-}
-```
-
-To read filtered OPC-UA values based on a specific node ID:
-
-```
-GET /ReadFilteredOPCUAValues?opcUrl=<OPC-UA server URL>&nodeid=<Node ID>
-```
-
-Please note that for secure connections, you can provide additional parameters such as `UserName`, `Password`, and `Secure_Policy`.
-
-## On Shutdown
-
-The server gracefully shuts down when the application receives a shutdown event. The shutdown event can be triggered by stopping the server or terminating the application. Upon shutdown, a message "Shutting down..." is printed.
-
-Feel free to modify and extend this code to meet your specific OPC-UA server requirements.
+Please ensure that you provide the correct OPC UA server details, authentication credentials (if required), and security policy (if applicable) when making the API requests.

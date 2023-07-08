@@ -1,62 +1,69 @@
 [main documentation](https://github.com/joaoribeiro5039/SimpleIoT/blob/main/README.MD)
+# Program Explanation
 
-# OPC-UA Data Publisher
+This program is designed to connect to an OPC UA server, read values from specific nodes, and send those values to different messaging systems, such as RabbitMQ, Kafka, and MQTT. It uses the `opcua`, `pika`, `confluent_kafka`, and `paho.mqtt.client` libraries for OPC UA, RabbitMQ, Kafka, and MQTT communication, respectively.
 
-This project implements an OPC-UA data publisher that reads values from an OPC-UA server and publishes them to various message brokers such as RabbitMQ, Apache Kafka, and MQTT. The values are published in JSON format, including the OPC-UA node ID, value, and timestamp.
+## OPC UA Connection Setup
 
-## Installation
+The program first establishes a connection to the OPC UA server specified by the `OPC_Host` environment variable. It uses the `opcua.Client` class from the `opcua` library to create a client and connect to the OPC UA server using the provided OPC UA host URL. It retrieves the root node and its children to access the OPC UA nodes that hold the desired values.
 
-To run the OPC-UA Data Publisher, follow these steps:
+## Messaging System Integration
 
-1. Clone the repository to your local machine.
-2. Install the required dependencies by running the following command:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Set the necessary environment variables based on your configuration. The variables include:
+The program supports integration with RabbitMQ, Kafka, and MQTT messaging systems. It checks for the presence of specific environment variables to determine whether to enable each messaging system.
 
-   - `RABBITMQ_BROKER_HOST`: Hostname or IP address of the RabbitMQ broker (optional).
-   - `RABBITMQ_BROKER_USER`: Username for RabbitMQ authentication (optional).
-   - `RABBITMQ_BROKER_PASSWORD`: Password for RabbitMQ authentication (optional).
-   - `RABBITMQ_BROKER_QUEUE_PREFIX`: Prefix for RabbitMQ queues (optional).
+### RabbitMQ Integration
 
-   - `KAFKA_BROKER_HOST`: Hostname or IP address of the Kafka broker (optional).
-   - `KAFKA_PRODUCER_ID`: ID for the Kafka producer (optional).
-   - `KAFKA_PRODUCER_PREFIX`: Prefix for Kafka topics (optional).
+The program checks for the presence of the following environment variables to enable RabbitMQ integration:
 
-   - `MQTT_BROKER_HOST`: Hostname or IP address of the MQTT broker (optional).
-   - `MQTT_BROKER_PORT`: Port number of the MQTT broker (optional).
-   - `MQTT_BROKER_PREFIX`: Prefix for MQTT topics (optional).
+- `RABBITMQ_BROKER_HOST`: Specifies the RabbitMQ broker host. If not provided, the default value is set to "localhost".
+- `RABBITMQ_BROKER_USER`: Specifies the RabbitMQ broker username. If not provided, the default value is set to "admin".
+- `RABBITMQ_BROKER_PASSWORD`: Specifies the RabbitMQ broker password. If not provided, the default value is set to "admin".
+- `RABBITMQ_BROKER_QUEUE_PREFIX`: Specifies the RabbitMQ queue prefix. If not provided, the default value is set to "server1".
 
-   - `OPC_UA_HOST`: Hostname or IP address of the OPC-UA server.
+If all the required environment variables are present, the program establishes a connection to the RabbitMQ broker using the `pika` library. It creates a channel and sets up the necessary queues for publishing messages.
 
-4. Run the OPC-UA Data Publisher with the following command:
-   ```
-   python opcpublisher.py
-   ```
+### Kafka Integration
 
-The publisher will start reading values from the OPC-UA server and publishing them to the configured message brokers.
+The program checks for the presence of the following environment variables to enable Kafka integration:
 
-## Message Brokers
+- `KAFKA_BROKER_HOST`: Specifies the Kafka broker host and port. If not provided, the default value is set to "localhost:29092".
+- `KAFKA_PRODUCER_ID`: Specifies the Kafka producer ID. If not provided, the default value is set to "my_producer".
+- `KAFKA_PRODUCER_PREFIX`: Specifies the Kafka producer prefix. If not provided, the default value is set to "server1".
 
-### RabbitMQ
+If all the required environment variables are present, the program establishes a connection to the Kafka broker using the `confluent_kafka` library. It creates a Kafka producer and configures it with the provided settings.
 
-If the RabbitMQ environment variables are set, the OPC-UA data publisher will publish messages to RabbitMQ queues. The messages will be sent with the specified queue prefix followed by the OPC-UA node ID. The default prefix is "server1".
+### MQTT Integration
 
-### Kafka
+The program checks for the presence of the following environment variables to enable MQTT integration:
 
-If the Kafka environment variables are set, the OPC-UA data publisher will publish messages to Kafka topics. The messages will be sent with the specified topic prefix followed by the OPC-UA node ID. The default prefix is "server1".
+- `MQTT_BROKER_HOST`: Specifies the MQTT broker host. If not provided, the default value is set to "localhost".
+- `MQTT_BROKER_PORT`: Specifies the MQTT broker port. If not provided, the default value is set to "1883".
+- `MQTT_BROKER_PREFIX`: Specifies the MQTT broker prefix. If not provided, the default value is set to "server1".
 
-### MQTT
+If all the required environment variables are present, the program establishes a connection to the MQTT broker using the `paho.mqtt.client` library.
 
-If the MQTT environment variables are set, the OPC-UA data publisher will publish messages to MQTT topics. The messages will be sent with the specified topic prefix followed by the OPC-UA node ID. The default prefix is "server1".
+## Publishing OPC UA Values to Messaging Systems
 
-## OPC-UA Server
+The program continuously loops through the OPC UA nodes and retrieves their values. For each OPC UA value, it creates a JSON object containing the OPC UA node ID, value, and timestamp. The JSON object is then converted to a JSON string.
 
-The OPC-UA server connection details are specified using the `OPC_UA_HOST` environment variable. Provide the hostname or IP address of the OPC-UA server. The default port is 4840.
+The program publishes the OPC UA values to the enabled messaging systems as follows:
 
-## On Shutdown
+- RabbitMQ: If RabbitMQ integration is enabled, the program publishes the JSON string to a RabbitMQ queue. The queue name is derived from the `RabbitMQ_Queue` environment variable and the OPC UA node ID.
+- Kafka: If Kafka integration is enabled, the program publishes the JSON string to a Kafka topic. The topic name is derived from the `KafkaProducerPref` environment variable and the OPC UA node ID.
+- MQTT: If MQTT integration is enabled, the program publishes the JSON string to an MQTT topic. The topic name is derived from the `MQTTBroker_Prefix` environment variable and the OPC UA node ID.
 
-The OPC-UA data publisher gracefully shuts down when the application is terminated. Upon shutdown, the publisher disconnects from the OPC-UA server and closes connections to the message brokers.
+## Program Cleanup
 
-Feel free to modify and extend this code to meet your specific requirements, such as adding additional message brokers or customizing the data format.
+Finally, the program disconnects from the OPC UA server and performs cleanup operations for each enabled messaging system:
+
+- RabbitMQ: If RabbitMQ integration is enabled, the program closes the RabbitMQ connection.
+- Kafka: If Kafka integration is enabled, the program flushes and closes the Kafka producer.
+- MQTT: If MQTT integration is enabled, the program disconnects from the MQTT broker.
+
+## Usage
+
+To use this program, make sure to set the appropriate environment variables according to the messaging systems you want to integrate with.
+
+Ensure that the OPC UA server is running and accessible at the provided OPC UA host URL (`OPC_Host`).
+
+Start the program, and it will continuously read OPC UA values and publish them to the enabled messaging systems.
