@@ -45,7 +45,7 @@ jobs:
         run: docker push joaoribeiro5039/opcuaserver:latest
   
   publish-opctobroker:
-    needs: publish-opcuaserver
+    needs: test-docker-compose-with-build
     name: Publish opctobroker to DockerHub
     runs-on: ubuntu-latest
     steps:
@@ -69,7 +69,7 @@ jobs:
         run: docker push joaoribeiro5039/opctobroker:latest
   
   publish-rabbitmqtocassandra:
-    needs: publish-opctobroker
+    needs: test-docker-compose-with-build
     name: Publish rabbitmqtocassandra to DockerHub
     runs-on: ubuntu-latest
     steps:
@@ -92,8 +92,34 @@ jobs:
       - name: Docker Push Latest rabbitmqtocassandra
         run: docker push joaoribeiro5039/rabbitmqtocassandra:latest
 
+
+  publish-opcwriter:
+    needs: test-docker-compose-with-build
+    name: Publish opcwriter to DockerHub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKERHUB_USER}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build the Docker image opcwriter
+        working-directory: ./opcwriter
+        run: docker build . --file Dockerfile --tag opcwriter:latest
+        
+      - name: Build Latest opcwriter Docker image
+        working-directory: ./opcwriter
+        run: docker tag opcwriter:latest joaoribeiro5039/opcwriter:latest
+
+      - name: Docker Push Latest opcwriter
+        run: docker push joaoribeiro5039/opcwriter:latest
+
+
   test-docker-compose-with-dockerhub:
-    needs: publish-rabbitmqtocassandra
+    needs: [publish-opcwriter, publish-rabbitmqtocassandra, publish-opctobroker, publish-opcuaserver]
     name: Test Docker compose with Docker hub components
     runs-on: ubuntu-latest
     steps:

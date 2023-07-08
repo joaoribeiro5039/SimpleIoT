@@ -47,7 +47,7 @@ services:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq-data:/var/lib/rabbitmq
     restart: always
     depends_on:
       - opcuaserver
@@ -60,46 +60,57 @@ services:
     volumes:
       - cassandra-data:/var/lib/cassandra
 
+  mqtt:
+    container_name: mqtt
+    image: eclipse-mosquitto:2.0
+    ports:
+      - 1883:1883
+    volumes:
+      - ./mqtt/config/:/mosquitto/config/
+
   opcuaserver:
     container_name: opcuaserver
     image: joaoribeiro5039/opcuaserver:latest
     ports:
       - "4840:4840"
     restart: always
-    depends_on:
-      - cassandra
-
 
   opctobroker:
     container_name: opctobroker
     image: joaoribeiro5039/opctobroker:latest
     environment:
-      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_HOST=rabbitmq #RabbitMQ 
       - RABBITMQ_BROKER_USER=admin
       - RABBITMQ_BROKER_PASSWORD=admin
       - RABBITMQ_BROKER_QUEUE_PREFIX=server1
-      - OPC_UA_HOST=opcuaserver:4840
-      - KAFKA_BROKER_HOST=kafka:9092
+      - OPC_UA_HOST=opcuaserver:4840 #OPC UA 
+      - KAFKA_BROKER_HOST=kafka:9092 #Kafka
       - KAFKA_PRODUCER_ID=my_producer
-      - KAFKA_PRODUCER_PREFIX=Server1
-      - OPC_UA_HOST=opcuaserver:4840
+      - KAFKA_PRODUCER_PREFIX=server1
+      - MQTT_BROKER_HOST=mqtt #Mqtt
+      - MQTT_BROKER_PORT=1883 
+      - MQTT_BROKER_PREFIX=server1
     restart: always
-    depends_on:
-      - rabbitmq
 
   rabbitmqtocassandra:
     container_name: rabbitmqtocassandra
     image: joaoribeiro5039/rabbitmqtocassandra:latest
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
-      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
       - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
       - RABBITMQ_BROKER_PASSWORD=admin
       - CASSANDRA_DB_HOST=cassandra
       - CASSANDRA_DB_TABLENAME=Server1
     restart: unless-stopped
-    depends_on:
-      - opctobroker
+
+  opcwriter:
+    container_name: opcwriter
+    image: joaoribeiro5039/opcwriter:latest
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+
 volumes:
-  rabbitmq_data:
+  rabbitmq-data:
   cassandra-data:
