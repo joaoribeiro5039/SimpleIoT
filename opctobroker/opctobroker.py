@@ -9,7 +9,7 @@ import os
 import json
 from confluent_kafka import Producer
 import paho.mqtt.client as mqtt
-import pika
+import platform
 
 #region Read RabbitMQ Env Variables
 global usingRabbit
@@ -38,7 +38,7 @@ else:
 global RabbitMQ_Queue
 RabbitMQ_Queue = os.getenv("RABBITMQ_BROKER_QUEUE_PREFIX")
 if RabbitMQ_Queue is None:
-    RabbitMQ_Queue = "server1"
+    RabbitMQ_Queue = platform.node()
 else:
     usingRabbit = True
 
@@ -46,7 +46,7 @@ else:
 
 #region Read Kafka Env Variables
 global usingKafka
-usingKafka =True
+usingKafka = False
 global KafkaBroker
 KafkaBroker = os.getenv("KAFKA_BROKER_HOST")
 if KafkaBroker is None:
@@ -54,17 +54,10 @@ if KafkaBroker is None:
 else:
     usingKafka = True
 
-global KafkaProducerID
-KafkaProducerID = os.getenv("KAFKA_PRODUCER_ID")
-if KafkaProducerID is None:
-    KafkaProducerID = "my_producer"
-else:
-    usingKafka = True
-
 global KafkaProducerPref
 KafkaProducerPref = os.getenv("KAFKA_PRODUCER_PREFIX")
 if KafkaProducerPref is None:
-    KafkaProducerPref = "server1"
+    KafkaProducerPref = platform.node()
 else:
     usingKafka = True
 #endregion
@@ -90,7 +83,7 @@ else:
 global MQTTBroker_Prefix
 MQTTBroker_Prefix = os.getenv("MQTT_BROKER_PREFIX")
 if MQTTBroker_Prefix is None:
-    MQTTBroker_Prefix = "server1"
+    MQTTBroker_Prefix = platform.node()
 else:
     usingmqtt = True
 #endregion
@@ -141,6 +134,7 @@ try:
                         obj_json = json.dumps(obj)
 
                         kafkatopic = KafkaProducerPref + "." + childnodeid.Identifier
+                        
                         if usingKafka:
                             kafka_producer.produce(topic=kafkatopic, value=obj_json)
 
