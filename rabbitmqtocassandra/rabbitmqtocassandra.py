@@ -12,13 +12,13 @@ import datetime
 global RabbitMQBroker
 RabbitMQBroker = os.getenv("RABBITMQ_BROKER_HOST")
 if RabbitMQBroker is None:
-    RabbitMQBroker = "localhost"
+    RabbitMQBroker = "server"
 
 
 global RabbitMQ_Queue
 RabbitMQ_Queue = os.getenv("RABBITMQ_BROKER_QUEUE_PREFIX")
 if RabbitMQ_Queue is None:
-    RabbitMQ_Queue = "server"
+    RabbitMQ_Queue = "all"
 
 global RabbitMQBroker_user
 RabbitMQBroker_user = os.getenv("RABBITMQ_BROKER_USER")
@@ -34,7 +34,7 @@ if RabbitMQBroker_password is None:
 global CassandraDB
 CassandraDB = os.getenv("CASSANDRA_DB_HOST")
 if CassandraDB is None:
-    CassandraDB = "localhost"
+    CassandraDB = "server"
 
 global TableName
 TableName = os.getenv("CASSANDRA_DB_TABLENAME")
@@ -54,8 +54,11 @@ response = requests.get("http://" + RabbitMQBroker + ":15672/api/queues", auth=(
 if response.status_code == 200:
     all_queue_list = [queue['name'] for queue in response.json()]
     for queu in all_queue_list:
-        if RabbitMQ_Queue in queu:
-            queue_list.append(queu)
+        if RabbitMQ_Queue == "all":
+                queue_list.append(queu)
+        else:
+            if RabbitMQ_Queue in queu:
+                queue_list.append(queu)
 else:
     print('Failed to retrieve queue list from RabbitMQ Management API.')
 
@@ -94,10 +97,9 @@ try:
 
     for queue in queue_list:
         channel.basic_consume(queue=queue, on_message_callback=process_message)
-    channel.start_consuming()
+        channel.start_consuming()
 
 finally:
-
     print("Restarting")
     session.shutdown()
     cluster.shutdown()

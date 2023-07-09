@@ -54,6 +54,13 @@ if KafkaBroker is None:
 else:
     usingKafka = True
 
+global KafkaProducerid
+KafkaProducerid = os.getenv("KAFKA_PRODUCER_ID")
+if KafkaProducerid is None:
+    KafkaProducerid = platform.node()
+else:
+    usingKafka = True
+
 global KafkaProducerPref
 KafkaProducerPref = os.getenv("KAFKA_PRODUCER_PREFIX")
 if KafkaProducerPref is None:
@@ -109,7 +116,7 @@ try:
         kafka_bootstrap_servers = KafkaBroker
         kafka_producer_config = {
             'bootstrap.servers': kafka_bootstrap_servers,
-            'client.id': 'my_producer',
+            'client.id': KafkaProducerid,
             'acks': 'all'
             }
         kafka_producer = Producer(kafka_producer_config)
