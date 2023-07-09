@@ -16,10 +16,10 @@ docker run -it -d -p 8080:8080 \
 docker service rm $(docker service ls -q)
 
 #Deploy OPC UA Server on each worker node
-#NUM_WORKERS=$(docker node ls --filter "role=worker" --format "{{.Hostname}}" | wc -l)
-#docker service create --name opcua-server --replicas $NUM_WORKERS --constraint 'node.role==worker' -p 4840:4840 joaoribeiro5039/opcuaserver:latest
+NUM_WORKERS=$(docker node ls --filter "role=worker" --format "{{.Hostname}}" | wc -l)
+docker service create --name opcua-server --replicas $NUM_WORKERS --constraint 'node.role==worker' -p 4840:4840 joaoribeiro5039/opcuaserver:latest
 #Deploy OPC UA Server on the swarm
-docker service create --name opcua-server --mode global -p 4840:4840 joaoribeiro5039/opcuaserver:latest
+#docker service create --name opcua-server --mode global -p 4840:4840 joaoribeiro5039/opcuaserver:latest
 
 
 
