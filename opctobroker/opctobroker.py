@@ -126,8 +126,8 @@ try:
         mqtt_client.connect(MQTTBroker_Host, int(MQTTBroker_Port))
 
     while True:
-        for chlid in childrens:
-            nodes = chlid.get_children()
+        for chil in childrens:
+            nodes = chil.get_children()
             for node in nodes:
                 if "ns=1" in str(node):
                     for childnode in node.get_children():

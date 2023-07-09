@@ -10,14 +10,10 @@ services:
       - RABBITMQ_BROKER_HOST=rabbitmq #RabbitMQ 
       - RABBITMQ_BROKER_USER=admin
       - RABBITMQ_BROKER_PASSWORD=admin
-      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
       - OPC_UA_HOST=opcuaserver:4840 #OPC UA 
-      - KAFKA_BROKER_HOST=JR-PC:29092 #Kafka
-      - KAFKA_PRODUCER_ID=my_producer
-      - KAFKA_PRODUCER_PREFIX=server1
+      - KAFKA_BROKER_HOST=kafka:9092 #Kafka
       - MQTT_BROKER_HOST=mqtt #Mqtt
       - MQTT_BROKER_PORT=1883 
-      - MQTT_BROKER_PREFIX=server1
     restart: always
 
   rabbitmqtocassandra:
@@ -28,10 +24,21 @@ services:
     environment:
       - RABBITMQ_BROKER_HOST=rabbitmq
       - RABBITMQ_BROKER_USER=admin
-      - RABBITMQ_BROKER_QUEUE_PREFIX=server1
       - RABBITMQ_BROKER_PASSWORD=admin
       - CASSANDRA_DB_HOST=cassandra
       - CASSANDRA_DB_TABLENAME=Server1
+    restart: unless-stopped
+
+  rabbitmqtoredis:
+    container_name: rabbitmqtoredis
+    build:
+      context: ./rabbitmqtoredis
+      dockerfile: Dockerfile
+    environment:
+      - RABBITMQ_BROKER_HOST=rabbitmq
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - REDIS_DB_HOST=redis
     restart: unless-stopped
 
   opcwriter:
@@ -110,6 +117,13 @@ services:
     volumes:
       - ./mqtt/config/:/mosquitto/config/
 
+  redis:
+      image: redis:latest
+      ports:
+        - 6379:6379
+      volumes:
+        - redis_data:/data
+
   opcuaserver:
     container_name: opcuaserver
     build:
@@ -122,3 +136,4 @@ services:
 volumes:
   rabbitmq-data:
   cassandra-data:
+  redis_data:

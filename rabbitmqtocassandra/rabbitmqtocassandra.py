@@ -12,7 +12,7 @@ import datetime
 global RabbitMQBroker
 RabbitMQBroker = os.getenv("RABBITMQ_BROKER_HOST")
 if RabbitMQBroker is None:
-    RabbitMQBroker = "server"
+    RabbitMQBroker = "localhost"
 
 
 global RabbitMQ_Queue
@@ -34,7 +34,7 @@ if RabbitMQBroker_password is None:
 global CassandraDB
 CassandraDB = os.getenv("CASSANDRA_DB_HOST")
 if CassandraDB is None:
-    CassandraDB = "server"
+    CassandraDB = "localhost"
 
 global TableName
 TableName = os.getenv("CASSANDRA_DB_TABLENAME")
@@ -45,8 +45,11 @@ global connection
 credentials = pika.PlainCredentials(RabbitMQBroker_user, RabbitMQBroker_password)
 connection_params = pika.ConnectionParameters(RabbitMQBroker, credentials=credentials)
 connection = pika.BlockingConnection(connection_params)
-global channel
-channel = connection.channel()
+global channels
+channels = []
+for chanel_id in range(0, 10):
+    channel = connection.channel()
+    channels.append(channel)
 
 global queue_list
 queue_list= []
@@ -93,13 +96,28 @@ def process_message(channel, method, properties, body):
     except:
         print("Message not delivered")
 
-try:
 
+def consume_queue(channel):
+    channel.start_consuming()
+
+try:
+    # Set the maximum number of workers
+    max_workers = 10
+    channels_index = 0
     for queue in queue_list:
-        channel.basic_consume(queue=queue, on_message_callback=process_message)
-        channel.start_consuming()
+        channels[channels_index].basic_consume(queue=queue, on_message_callback=process_message)
+        if channels_index<9:
+            channels_index = channels_index + 1
+        else:
+            channels_index = 0
+    # Create a thread pool executor with the maximum number of workers
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit the consume_queue function for each queue
+        for chanel_id in range(0,10):
+            executor.submit(consume_queue,channels[channels_index])
 
 finally:
+
     print("Restarting")
     session.shutdown()
     cluster.shutdown()
