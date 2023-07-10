@@ -98,8 +98,6 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
     restart: always
-    depends_on:
-      - opcuaserver
 
   cassandra:
     image: cassandra:latest
@@ -118,11 +116,12 @@ services:
       - ./mqtt/config/:/mosquitto/config/
 
   redis:
-      image: redis:latest
-      ports:
-        - 6379:6379
-      volumes:
-        - redis_data:/data
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
 
   opcuaserver:
     container_name: opcuaserver

@@ -56,37 +56,43 @@ else:
 
 redis_client = redis.Redis(host=RedisDB, port=6379)
 
+global internal_buffer
+global start_time
+
 def process_message(channel, method, properties, body):
-    starttime = datetime.datetime.now()
-    message = body.decode()
-    _nodeid = method.routing_key
-    msg_obj = json.loads(message)
-    msg_time = str(datetime.datetime.now())
-    try:
-        redis_key = _nodeid
-        value = redis_client.get(redis_key)
-        if value:
-            objects = json.loads(value.decode())
-        else:
-            objects = []
-        new_object = {
-            'value': msg_obj,
-            'timestamp': msg_time
+    global internal_buffer
+    global start_time
+    new_message = {
+        'message': body.decode(),
+        '_nodeid': method.routing_key,
+        'msg_time': str(datetime.datetime.now())
         }
-        objects.append(new_object)
-        updated_value = json.dumps(objects)
-        redis_client.set(redis_key, updated_value)
-        updated_value = redis_client.get(redis_key)
-        updated_objects = json.loads(updated_value.decode())
-        if new_object in updated_objects:
-            channel.basic_ack(delivery_tag=method.delivery_tag)
-    except:
-        print("Message not delivered")
+    internal_buffer.append(new_message)
+    channel.basic_ack(delivery_tag=method.delivery_tag)
+    this_time = int(time.time())
+    timedif = this_time - start_time
 
-    endtime = datetime.datetime.now()
-    print(endtime = starttime)
-
+    if timedif > 10:
+        start_time = int(time.time())
+        redis_queues_key = redis_client.get("queues")
+        redis_queues_list = json.loads(redis_queues_key.decode())
+        for redis_queue_key in redis_queues_list:
+            filtered_messages = []
+            filtered_messages = [message for message in internal_buffer if message['_nodeid'] == redis_queue_key]
+            if len(filtered_messages)>0:
+                existed_values = redis_client.get(redis_queue_key)
+                if existed_values:
+                    existed_data = json.loads(existed_values.decode())
+                else:
+                    existed_data = []
+                existed_data.append(filtered_messages)
+                redis_client.set(redis_queue_key, json.dumps(existed_data))
+            for added_filter in filtered_messages:
+                internal_buffer.remove(added_filter)
 try:
+    internal_buffer = []
+    start_time = int(time.time())
+    redis_client.set("queues", json.dumps(queue_list))
     for queue in queue_list:
         channel.basic_consume(queue=queue, on_message_callback=process_message)
     channel.start_consuming()
