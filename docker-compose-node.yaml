@@ -1,0 +1,28 @@
+version: '3'
+services:
+
+  opctobroker:
+    container_name: opctobroker
+    build:
+      context: ./opctobroker
+      dockerfile: Dockerfile
+    environment:
+      - RABBITMQ_BROKER_HOST=JR-PC #RabbitMQ 
+      - RABBITMQ_BROKER_USER=admin
+      - RABBITMQ_BROKER_PASSWORD=admin
+      - OPC_UA_HOST=opcuaserver:4840 #OPC UA
+    restart: always
+
+  opcuaserver:
+    container_name: opcuaserver
+    build:
+      context: ./opcserver
+      dockerfile: Dockerfile
+    ports:
+      - "4840:4840"
+    restart: always
+
+volumes:
+  rabbitmq-data:
+  cassandra-data:
+  redis_data:

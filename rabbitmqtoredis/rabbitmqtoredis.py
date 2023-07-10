@@ -54,24 +54,37 @@ if response.status_code == 200:
 else:
     print('Failed to retrieve queue list from RabbitMQ Management API.')
 
-
 redis_client = redis.Redis(host=RedisDB, port=6379)
-redis_client.set("redis_key", "msg_obj")
 
 def process_message(channel, method, properties, body):
+    starttime = datetime.datetime.now()
     message = body.decode()
     _nodeid = method.routing_key
     msg_obj = json.loads(message)
-    msg_value = msg_obj['value']
-    msg_opcread = msg_obj['opc_read_time']
     msg_time = str(datetime.datetime.now())
     try:
-        redis_key = msg_time + "_" + _nodeid
-        redis_value = json.dumps(msg_obj)
-        redis_client.set(redis_key, redis_value)
-        channel.basic_ack(delivery_tag=method.delivery_tag)
+        redis_key = _nodeid
+        value = redis_client.get(redis_key)
+        if value:
+            objects = json.loads(value.decode())
+        else:
+            objects = []
+        new_object = {
+            'value': msg_obj,
+            'timestamp': msg_time
+        }
+        objects.append(new_object)
+        updated_value = json.dumps(objects)
+        redis_client.set(redis_key, updated_value)
+        updated_value = redis_client.get(redis_key)
+        updated_objects = json.loads(updated_value.decode())
+        if new_object in updated_objects:
+            channel.basic_ack(delivery_tag=method.delivery_tag)
     except:
         print("Message not delivered")
+
+    endtime = datetime.datetime.now()
+    print(endtime = starttime)
 
 try:
     for queue in queue_list:
